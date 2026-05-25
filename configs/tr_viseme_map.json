@@ -1,0 +1,106 @@
+{
+  "description": "Türkçe fonem → viseme eşleme tablosu (Cross-Lingual Distillation için)",
+  "version": "1.0",
+  "source": "Amazon Polly IPA + Türkçe fonetik referans",
+  "viseme_groups": {
+    "V_BILABIAL": {
+      "phonemes": ["p", "b", "m"],
+      "description": "Dudaklar kapanır",
+      "ipa": ["/p/", "/b/", "/m/"]
+    },
+    "V_LABIODENTAL": {
+      "phonemes": ["f", "v"],
+      "description": "Alt dudak üst dişlere temas",
+      "ipa": ["/f/", "/v/"]
+    },
+    "V_DENTAL_ALVEOLAR": {
+      "phonemes": ["t", "d", "n", "l", "r"],
+      "description": "Dil ucu üst dişlere/dişeti sırtına temas",
+      "ipa": ["/t/", "/d/", "/n/", "/l/", "/ɾ/"]
+    },
+    "V_ALVEOLAR_FRICATIVE": {
+      "phonemes": ["s", "z"],
+      "description": "Sürtünmeli dişeti sesleri",
+      "ipa": ["/s/", "/z/"]
+    },
+    "V_POSTALVEOLAR": {
+      "phonemes": ["ş", "ç", "j"],
+      "description": "Dişeti ardı sürtünmeliler",
+      "ipa": ["/ʃ/", "/tʃ/", "/ʒ/"]
+    },
+    "V_VELAR": {
+      "phonemes": ["k", "g", "ğ"],
+      "description": "Yumuşak damak sesleri",
+      "ipa": ["/k/", "/ɡ/", "/ɰ/"]
+    },
+    "V_GLOTTAL": {
+      "phonemes": ["h"],
+      "description": "Gırtlak sesi — dudak hareketi minimal",
+      "ipa": ["/h/"]
+    },
+    "V_OPEN_UNROUNDED": {
+      "phonemes": ["a", "e"],
+      "description": "Açık ağız, yuvarlak olmayan",
+      "ipa": ["/a/", "/e/"]
+    },
+    "V_CLOSE_UNROUNDED": {
+      "phonemes": ["ı", "i"],
+      "description": "Kapalı ağız, yuvarlak olmayan",
+      "ipa": ["/ɯ/", "/i/"]
+    },
+    "V_OPEN_ROUNDED": {
+      "phonemes": ["o", "ö"],
+      "description": "Açık ağız, yuvarlak",
+      "ipa": ["/o/", "/ø/"]
+    },
+    "V_CLOSE_ROUNDED": {
+      "phonemes": ["u", "ü"],
+      "description": "Kapalı ağız, yuvarlak",
+      "ipa": ["/u/", "/y/"]
+    },
+    "V_SILENCE": {
+      "phonemes": [" ", "<blank>"],
+      "description": "Sessizlik / CTC blank token",
+      "ipa": []
+    }
+  },
+  "phoneme_to_viseme": {
+    "p": "V_BILABIAL",
+    "b": "V_BILABIAL",
+    "m": "V_BILABIAL",
+    "f": "V_LABIODENTAL",
+    "v": "V_LABIODENTAL",
+    "t": "V_DENTAL_ALVEOLAR",
+    "d": "V_DENTAL_ALVEOLAR",
+    "n": "V_DENTAL_ALVEOLAR",
+    "l": "V_DENTAL_ALVEOLAR",
+    "r": "V_DENTAL_ALVEOLAR",
+    "s": "V_ALVEOLAR_FRICATIVE",
+    "z": "V_ALVEOLAR_FRICATIVE",
+    "ş": "V_POSTALVEOLAR",
+    "ç": "V_POSTALVEOLAR",
+    "j": "V_POSTALVEOLAR",
+    "k": "V_VELAR",
+    "g": "V_VELAR",
+    "ğ": "V_VELAR",
+    "h": "V_GLOTTAL",
+    "a": "V_OPEN_UNROUNDED",
+    "e": "V_OPEN_UNROUNDED",
+    "ı": "V_CLOSE_UNROUNDED",
+    "i": "V_CLOSE_UNROUNDED",
+    "o": "V_OPEN_ROUNDED",
+    "ö": "V_OPEN_ROUNDED",
+    "u": "V_CLOSE_ROUNDED",
+    "ü": "V_CLOSE_ROUNDED",
+    "y": "V_DENTAL_ALVEOLAR",
+    "c": "V_POSTALVEOLAR",
+    " ": "V_SILENCE",
+    "<blank>": "V_SILENCE"
+  },
+  "num_viseme_classes": 12,
+  "notes": {
+    "vowel_harmony": "Türkçe ünlü uyumu (büyük/küçük, düz/yuvarlak) viseme gruplarına yansıtılmıştır",
+    "cross_lingual": "İngilizce viseme grupları ile ~%80 örtüşme — V_VELAR grubu (ğ) Türkçe'ye özgü",
+    "ambiguity": "V_DENTAL_ALVEOLAR en geniş grup, visüel olarak en belirsiz alan"
+  }
+}

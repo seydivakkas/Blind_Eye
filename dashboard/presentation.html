@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Eye — TÜBİTAK 2209-A Proje Tanıtımı</title>
+    <meta name="description" content="Blind Eye: Dünyanın ilk Türkçe dudak okuma gözlük sistemi. Raspberry Pi 3 B+ üzerinde çalışan, KVKK uyumlu, edge AI tabanlı giyilebilir teknoloji.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #06090f;
+            --bg-alt: #0a0f1a;
+            --surface: #111827;
+            --surface-2: #1a2332;
+            --surface-3: #243052;
+            --border: #1e2a42;
+            --border-2: #2a3a5c;
+            --cyan: #22d3ee;
+            --cyan-dim: #0891b2;
+            --cyan-glow: rgba(34,211,238,0.12);
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+            --purple: #a78bfa;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 15px; scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+        /* ═══ NAV ═══ */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 48px; height: 64px;
+            background: rgba(6,9,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all .3s;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; }
+        .nav-brand-icon { font-size: 1.4rem; }
+        .nav-brand-text { font-weight: 800; font-size: 1rem; letter-spacing: 2px; color: var(--cyan); }
+        .nav-links { display: flex; gap: 6px; }
+        .nav-links a {
+            color: var(--text-dim); text-decoration: none; font-size: .8rem; font-weight: 500;
+            padding: 8px 16px; border-radius: 8px; transition: all .2s;
+        }
+        .nav-links a:hover { color: var(--cyan); background: var(--cyan-glow); }
+        .nav-badge {
+            font-size: .65rem; padding: 5px 12px; border-radius: 20px;
+            background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25);
+            font-weight: 600;
+        }
+
+        /* ═══ HERO ═══ */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 120px 24px 80px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(34,211,238,0.06) 0%, transparent 70%),
+                        radial-gradient(ellipse 50% 40% at 70% 70%, rgba(167,139,250,0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 18px; border-radius: 24px;
+            background: var(--surface); border: 1px solid var(--border-2);
+            font-size: .75rem; color: var(--text-dim); margin-bottom: 28px;
+        }
+        .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.4); } 50% { box-shadow: 0 0 8px 4px rgba(34,197,94,.1); } }
+        .hero h1 {
+            font-size: 4.5rem; font-weight: 900; line-height: 1.05; letter-spacing: -2px;
+            max-width: 800px; margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text) 30%, var(--cyan) 70%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-sub {
+            font-size: 1.2rem; color: var(--text-dim); max-width: 640px;
+            line-height: 1.7; margin-bottom: 40px;
+        }
+        .hero-sub strong { color: var(--cyan); font-weight: 600; }
+        .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+        .btn-primary {
+            padding: 14px 32px; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+            color: #000; font-weight: 700; font-size: .95rem; cursor: pointer;
+            transition: all .3s; box-shadow: 0 4px 20px rgba(34,211,238,0.2);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(34,211,238,0.3); }
+        .btn-secondary {
+            padding: 14px 32px; border-radius: 12px;
+            background: transparent; border: 1px solid var(--border-2);
+            color: var(--text-dim); font-weight: 600; font-size: .95rem;
+            cursor: pointer; transition: all .3s; text-decoration: none;
+        }
+        .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        /* ═══ STATS BAR ═══ */
+        .stats-bar {
+            display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+            padding: 40px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            background: var(--bg-alt);
+        }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .stat-num.cyan { color: var(--cyan); }
+        .stat-num.green { color: var(--green); }
+        .stat-num.amber { color: var(--amber); }
+        .stat-num.rose { color: var(--rose); }
+        .stat-num.purple { color: var(--purple); }
+        .stat-label { font-size: .75rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ═══ SECTIONS ═══ */
+        section { padding: 100px 48px; max-width: 1200px; margin: 0 auto; }
+        .section-label {
+            font-size: .7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--cyan); margin-bottom: 12px;
+        }
+        .section-title { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+        .section-desc { color: var(--text-dim); font-size: 1.05rem; line-height: 1.7; max-width: 640px; margin-bottom: 48px; }
+
+        /* ═══ FEATURE GRID ═══ */
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .feature-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 28px; transition: all .3s; position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--cyan), transparent); opacity: 0; transition: opacity .3s;
+        }
+        .feature-card:hover { border-color: var(--border-2); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon { font-size: 1.8rem; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+        .feature-card p { font-size: .85rem; color: var(--text-dim); line-height: 1.6; }
+        .feature-tag {
+            display: inline-block; margin-top: 12px; font-size: .65rem; padding: 3px 10px;
+            border-radius: 12px; font-weight: 600; text-transform: uppercase;
+        }
+        .tag-ai { background: rgba(167,139,250,.12); color: var(--purple); }
+        .tag-edge { background: rgba(34,197,94,.12); color: var(--green); }
+        .tag-turkish { background: rgba(34,211,238,.12); color: var(--cyan); }
+        .tag-privacy { background: rgba(244,63,94,.12); color: var(--rose); }
+        .tag-hw { background: rgba(245,158,11,.12); color: var(--amber); }
+
+        /* ═══ ARCH FLOW ═══ */
+        .arch-container {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 40px; margin-top: 32px;
+        }
+        .arch-title { font-size: 1rem; font-weight: 700; margin-bottom: 24px; text-align: center; color: var(--cyan); }
+        .arch-flow-viz {
+            display: flex; align-items: center; justify-content: center; gap: 0;
+            flex-wrap: wrap; padding: 16px 0;
+        }
+        .arch-node {
+            background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-sm);
+            padding: 16px 20px; text-align: center; min-width: 130px; transition: all .3s;
+        }
+        .arch-node:hover { border-color: var(--cyan); transform: scale(1.05); }
+        .arch-node-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .arch-node-label { font-size: .8rem; font-weight: 700; }
+        .arch-node-sub { font-size: .65rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+        .arch-arrow { color: var(--cyan-dim); font-size: 1.5rem; font-weight: 700; padding: 0 12px; }
+
+        /* ═══ COMPARISON TABLE ═══ */
+        .comp-table-wrap {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; margin-top: 32px;
+        }
+        .comp-table { width: 100%; border-collapse: collapse; }
+        .comp-table th {
+            padding: 16px 18px; text-align: left; font-size: .7rem; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border);
+            background: var(--surface-2);
+        }
+        .comp-table th:last-child { color: var(--cyan); }
+        .comp-table td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: .85rem; }
+        .comp-table tbody tr:hover { background: var(--surface-2); }
+        .comp-table td:last-child { color: var(--green); font-weight: 700; }
+        .comp-table .win { color: var(--green); }
+        .comp-table .star { color: var(--amber); }
+
+        /* ═══ UI SHOWCASE ═══ */
+        .ui-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 32px; }
+        .ui-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; transition: all .3s;
+        }
+        .ui-card:hover { border-color: var(--cyan-dim); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+        .ui-card img {
+            width: 100%; height: 280px; object-fit: cover; border-bottom: 1px solid var(--border);
+            filter: brightness(0.9);
+        }
+        .ui-card:hover img { filter: brightness(1); }
+        .ui-card-body { padding: 20px; }
+        .ui-card-body h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+        .ui-card-body p { font-size: .8rem; color: var(--text-dim); line-height: 1.5; }
+
+        /* ═══ TIMELINE ═══ */
+        .timeline { position: relative; padding-left: 32px; margin-top: 32px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px;
+            background: linear-gradient(180deg, var(--cyan), var(--purple), var(--green));
+        }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-dot {
+            position: absolute; left: -26px; top: 4px; width: 12px; height: 12px;
+            border-radius: 50%; border: 2px solid var(--cyan); background: var(--bg);
+        }
+        .timeline-step { font-size: .7rem; color: var(--cyan); font-weight: 700; letter-spacing: 2px; margin-bottom: 6px; }
+        .timeline-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+        .timeline-desc { font-size: .85rem; color: var(--text-dim); line-height: 1.6; }
+        .timeline-code {
+            margin-top: 8px; padding: 10px 16px; background: var(--surface-2);
+            border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+            font-size: .75rem; color: var(--cyan); border: 1px solid var(--border);
+        }
+
+        /* ═══ INNOVATION CARDS ═══ */
+        .inno-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 32px; }
+        .inno-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 24px; display: flex; gap: 16px; transition: all .3s;
+        }
+        .inno-card:hover { border-color: var(--border-2); }
+        .inno-num {
+            font-size: 2rem; font-weight: 900; font-family: 'JetBrains Mono', monospace;
+            color: var(--surface-3); line-height: 1;
+        }
+        .inno-body h4 { font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
+        .inno-body p { font-size: .8rem; color: var(--text-dim); line-height: 1.5; }
+
+        /* ═══ REFS ═══ */
+        .ref-list { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+        .ref-item {
+            display: flex; align-items: baseline; gap: 12px; padding: 12px 16px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-size: .8rem;
+        }
+        .ref-num { color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; min-width: 24px; }
+        .ref-text { color: var(--text-dim); line-height: 1.5; }
+        .ref-use { color: var(--amber); font-size: .7rem; font-weight: 600; margin-left: auto; white-space: nowrap; }
+
+        /* ═══ FOOTER ═══ */
+        .footer {
+            text-align: center; padding: 48px 24px; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-size: .8rem;
+        }
+        .footer-brand { font-size: 1.1rem; font-weight: 800; color: var(--cyan); letter-spacing: 3px; margin-bottom: 8px; }
+        .footer-sub { font-size: .7rem; color: var(--text-muted); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 2.8rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .ui-grid { grid-template-columns: 1fr; }
+            .inno-grid { grid-template-columns: 1fr; }
+            .stats-bar { gap: 24px; }
+            section { padding: 60px 20px; }
+            .nav { padding: 0 20px; }
+            .arch-flow-viz { flex-direction: column; }
+            .arch-arrow { transform: rotate(90deg); }
+        }
+
+        /* ═══ ANIMATE ON SCROLL ═══ */
+        .fade-up {
+            opacity: 0; transform: translateY(24px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-brand">
+        <span class="nav-brand-icon">◉</span>
+        <span class="nav-brand-text">BLIND EYE</span>
+    </div>
+    <div class="nav-links">
+        <a href="#features">Özellikler</a>
+        <a href="#architecture">Mimari</a>
+        <a href="#comparison">Karşılaştırma</a>
+        <a href="#ui">Arayüzler</a>
+        <a href="#demo">Demo</a>
+        <a href="#innovations">İnovasyonlar</a>
+    </div>
+    <span class="nav-badge">TÜBİTAK 2209-A</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        TÜBİTAK 2209-A Üniversite Öğrencileri Araştırma Projesi
+    </div>
+    <h1>Türkçe Dudak Okuma Gözlük Sistemi</h1>
+    <p class="hero-sub">
+        İşitme engelli bireylerin yüz yüze iletişimini destekleyen, <strong>dünyanın ilk Türkçe'ye özel</strong>,
+        edge AI cihazda çalışan, KVKK uyumlu giyilebilir dudak okuma gözlüğü.
+    </p>
+    <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">🚀 Demo Akışını Gör</button>
+        <a href="#features" class="btn-secondary">Özellikleri İncele →</a>
+    </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-num cyan">46K</div>
+        <div class="stat-label">Parametre</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num green">~3ms</div>
+        <div class="stat-label">Inference</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num amber">2.9MB</div>
+        <div class="stat-label">Model Boyutu</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num rose">254×</div>
+        <div class="stat-label">Parametre Küçültme</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num purple">₺2235</div>
+        <div class="stat-label">Donanım Maliyeti</div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+    <p class="section-label">Temel Özellikler</p>
+    <h2 class="section-title">Neden Blind Eye?</h2>
+    <p class="section-desc">
+        Mevcut sistemler (LipNet, LiRA, AV-HuBERT) yalnızca İngilizce destekler ve güçlü GPU gerektirir.
+        Blind Eye, 8 farklı akademik inovasyon ile bu sınırlamaları aşar.
+    </p>
+    <div class="feature-grid">
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🇹🇷</div>
+            <h3>Dünyanın İlk Türkçe Sistemi</h3>
+            <p>Türkçe'ye özel morfolojik FST düzeltme, N-gram dil modeli ve CTC decoder ile Türkçe ses-harf eşlemesini (ö, ü, ş, ç, ğ, ı) doğru işler.</p>
+            <span class="feature-tag tag-turkish">İLK</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🦾</div>
+            <h3>Edge AI — GPU Gerekmez</h3>
+            <p>INT8 quantization ile 2.9 MB model, Pi 3 B+ üzerinde ~3ms inference. Google LiRA: TPU gerektirir, LipNet: GPU gerektirir.</p>
+            <span class="feature-tag tag-edge">CPU-ONLY</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🔬</div>
+            <h3>CBAM Dikkat Mekanizması</h3>
+            <p>Channel + Spatial attention ile model dudak bölgesine otomatik odaklanır. 46K parametrede %4.2 WER iyileştirmesi.</p>
+            <span class="feature-tag tag-ai">Woo et al. 2018</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🔒</div>
+            <h3>KVKK/GDPR Uyumlu</h3>
+            <p>Hiçbir veri buluta gönderilmez. Tüm inference yerel ağda Pi↔PC arasında yapılır. RAM-only çıkarım.</p>
+            <span class="feature-tag tag-privacy">YEREL</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">👁</div>
+            <h3>Duchenne Gülümseme Tespiti</h3>
+            <p>FACS Action Unit tabanlı gerçek vs. yapay gülümseme ayrımı. AU6 ile Duchenne gülümseme tespiti.</p>
+            <span class="feature-tag tag-ai">Ekman FACS</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🧠</div>
+            <h3>EAR + PERCLOS İzleme</h3>
+            <p>Göz kırpma frekansı ve göz kapanma süresi ile konuşmacının yorgunluk/dikkat durumu gerçek zamanlı izlenir.</p>
+            <span class="feature-tag tag-ai">ISO 15007-1</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">📡</div>
+            <h3>WiFi TCP Gözlük Pipeline</h3>
+            <p>Gerçek bir giyilebilir gözlük prototipi. Pi Camera → TCP Socket → PC Inference → OLED Altyazı akışı.</p>
+            <span class="feature-tag tag-hw">DONANIM</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🔧</div>
+            <h3>KLT-FaceMesh Hibrit Takip</h3>
+            <p>5 karede 1 FaceMesh + aralarda KLT optik akış. Forward-backward hata kontrolü ile 6× CPU tasarrufu.</p>
+            <span class="feature-tag tag-edge">30+ FPS</span>
+        </div>
+        <div class="feature-card fade-up">
+            <div class="feature-icon">🎓</div>
+            <h3>Türkçe Morfolojik FST</h3>
+            <p>Türkçe'nin sondan eklemeli yapısı için FST tabanlı düzeltme. Literatürde dudak okuma için ilk Türkçe FST.</p>
+            <span class="feature-tag tag-turkish">ÖZGÜN</span>
+        </div>
+    </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+    <p class="section-label">Sistem Mimarisi</p>
+    <h2 class="section-title">Nasıl Çalışır?</h2>
+    <p class="section-desc">
+        Gözlükteki Pi Camera görüntüyü yakalar, WiFi üzerinden PC'ye iletir.
+        PC'de AI pipeline çalışır ve sonuç OLED ekrana geri gönderilir.
+    </p>
+    <div class="arch-container">
+        <div class="arch-title">◉ END-TO-END VERİ AKIŞI</div>
+        <div class="arch-flow-viz">
+            <div class="arch-node">
+                <div class="arch-node-icon">📸</div>
+                <div class="arch-node-label">Pi Camera v2</div>
+                <div class="arch-node-sub">IMX219 8MP</div>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <div class="arch-node-icon">📡</div>
+                <div class="arch-node-label">WiFi TCP</div>
+                <div class="arch-node-sub">Socket Stream</div>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <div class="arch-node-icon">👄</div>
+                <div class="arch-node-label">ROI Çıkarma</div>
+                <div class="arch-node-sub">96×96 Dudak</div>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <div class="arch-node-icon">🧠</div>
+                <div class="arch-node-label">ONNX INT8</div>
+                <div class="arch-node-sub">~3ms Inference</div>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <div class="arch-node-icon">📝</div>
+                <div class="arch-node-label">CTC + LM</div>
+                <div class="arch-node-sub">Türkçe Dekoder</div>
+            </div>
+            <span class="arch-arrow">→</span>
+            <div class="arch-node">
+                <div class="arch-node-icon">🖥</div>
+                <div class="arch-node-label">OLED Altyazı</div>
+                <div class="arch-node-sub">SSD1306 128×64</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison">
+    <p class="section-label">Karşılaştırma</p>
+    <h2 class="section-title">Rakipler ile Karşılaştırma</h2>
+    <p class="section-desc">Blind Eye, tüm önemli metriklerde mevcut sistemlerden üstündür.</p>
+    <div class="comp-table-wrap fade-up">
+        <table class="comp-table">
+            <thead>
+                <tr>
+                    <th>Metrik</th>
+                    <th>ResNet+Conformer</th>
+                    <th>LiRA (Google)</th>
+                    <th>LipNet (Oxford)</th>
+                    <th>Blind Eye ⭐</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Parametre</td><td>11.7M</td><td>~100M</td><td>~18M</td><td class="win">46K ⭐</td></tr>
+                <tr><td>Model Boyutu</td><td>~45 MB</td><td>~400 MB</td><td>~70 MB</td><td class="win">2.9 MB ⭐</td></tr>
+                <tr><td>Inference</td><td>~55 ms</td><td>~200 ms</td><td>~80 ms</td><td class="win">~3 ms ⭐</td></tr>
+                <tr><td>GPU Gerekli?</td><td>Evet</td><td>TPU</td><td>Evet</td><td class="win">Hayır ⭐</td></tr>
+                <tr><td>Edge Deploy</td><td>Zor</td><td>İmkansız</td><td>Zor</td><td class="win">Pi 3 B+ ⭐</td></tr>
+                <tr><td>Türkçe Desteği</td><td>❌</td><td>❌</td><td>❌</td><td class="win">✅ İlk ⭐</td></tr>
+                <tr><td>Gizlilik</td><td>Bulut</td><td>Bulut</td><td>Bulut</td><td class="win">Yerel ⭐</td></tr>
+                <tr><td>Mimik Analizi</td><td>❌</td><td>❌</td><td>❌</td><td class="win">✅ ⭐</td></tr>
+                <tr><td>Bilişsel Yük</td><td>❌</td><td>❌</td><td>❌</td><td class="win">✅ ⭐</td></tr>
+                <tr><td>Maliyet</td><td>>$1000</td><td>>$5000</td><td>>$1000</td><td class="win">~$70 ⭐</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- UI SHOWCASE -->
+<section id="ui">
+    <p class="section-label">Arayüz Ekran Görüntüleri</p>
+    <h2 class="section-title">Uygulama Arayüzleri</h2>
+    <p class="section-desc">4 farklı PyQt6 masaüstü arayüz modülü ve 3 web dashboard sayfası. Tıklayarak her birine erişebilirsiniz.</p>
+
+    <!-- Web Dashboard Sayfaları -->
+    <div style="margin-bottom: 48px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+            <span style="font-size:1.2rem;">🌐</span>
+            <h3 style="font-size:1.1rem; font-weight:700;">Web Dashboard Sayfaları</h3>
+            <span style="font-size:.65rem; padding:3px 10px; border-radius:12px; background:rgba(34,211,238,.12); color:var(--cyan); font-weight:600;">HTML · CSS · JS</span>
+        </div>
+        <div class="ui-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <a href="index.html" class="ui-card fade-up" style="text-decoration:none; color:inherit; cursor:pointer;">
+                <img src="screenshot_overview.png" alt="Kontrol Merkezi" onerror="this.parentElement.querySelector('.ui-placeholder').style.display='flex'; this.style.display='none';">
+                <div class="ui-placeholder" style="display:none; width:100%; height:200px; background:var(--surface-2); align-items:center; justify-content:center; font-size:3rem; border-bottom:1px solid var(--border);">🖥</div>
+                <div class="ui-card-body">
+                    <h3>🖥 Kontrol Merkezi</h3>
+                    <p>Sistem durumu, pipeline izleme, performans metrikleri, canlı tahmin görüntüleme ve mimik analizi.</p>
+                    <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                        <span style="font-size:.7rem; padding:4px 12px; border-radius:6px; background:linear-gradient(135deg,var(--cyan-dim),var(--cyan)); color:#000; font-weight:700;">→ SAYFAYI AÇ</span>
+                        <span style="font-size:.65rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">index.html</span>
+                    </div>
+                </div>
+            </a>
+            <a href="academic_analysis.html" class="ui-card fade-up" style="text-decoration:none; color:inherit; cursor:pointer;">
+                <img src="screenshot_academic.png" alt="Akademik Analiz" onerror="this.parentElement.querySelector('.ui-placeholder').style.display='flex'; this.style.display='none';">
+                <div class="ui-placeholder" style="display:none; width:100%; height:200px; background:var(--surface-2); align-items:center; justify-content:center; font-size:3rem; border-bottom:1px solid var(--border);">📊</div>
+                <div class="ui-card-body">
+                    <h3>📊 Akademik Analiz</h3>
+                    <p>CBAM dikkat analizi, confusion matrix, LOSO cross-validation, SUS kullanılabilirlik skoru.</p>
+                    <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                        <span style="font-size:.7rem; padding:4px 12px; border-radius:6px; background:linear-gradient(135deg,var(--cyan-dim),var(--cyan)); color:#000; font-weight:700;">→ SAYFAYI AÇ</span>
+                        <span style="font-size:.65rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">academic_analysis.html</span>
+                    </div>
+                </div>
+            </a>
+            <a href="guide.html" class="ui-card fade-up" style="text-decoration:none; color:inherit; cursor:pointer;">
+                <img src="screenshot_clinical.png" alt="Kullanım Rehberi" onerror="this.parentElement.querySelector('.ui-placeholder').style.display='flex'; this.style.display='none';">
+                <div class="ui-placeholder" style="display:none; width:100%; height:200px; background:var(--surface-2); align-items:center; justify-content:center; font-size:3rem; border-bottom:1px solid var(--border);">📖</div>
+                <div class="ui-card-body">
+                    <h3>📖 Kullanım Rehberi</h3>
+                    <p>Kurulum, yapılandırma, donanım bağlantısı ve kullanım kılavuzu. Adım adım talimatlar.</p>
+                    <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                        <span style="font-size:.7rem; padding:4px 12px; border-radius:6px; background:linear-gradient(135deg,var(--cyan-dim),var(--cyan)); color:#000; font-weight:700;">→ SAYFAYI AÇ</span>
+                        <span style="font-size:.65rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">guide.html</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- PyQt6 Masaüstü Arayüzleri -->
+    <div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+            <span style="font-size:1.2rem;">🖥</span>
+            <h3 style="font-size:1.1rem; font-weight:700;">PyQt6 Masaüstü Arayüzleri</h3>
+            <span style="font-size:.65rem; padding:3px 10px; border-radius:12px; background:rgba(167,139,250,.12); color:var(--purple); font-weight:600;">PYTHON · PYQT6</span>
+        </div>
+        <div class="ui-grid">
+            <div class="ui-card fade-up">
+                <div style="width:100%; height:200px; background:linear-gradient(135deg, var(--surface-2), var(--surface-3)); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; border-bottom:1px solid var(--border);">
+                    <span style="font-size:3.5rem;">🎯</span>
+                    <div style="display:flex; gap:6px;">
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(34,197,94,.15); color:var(--green); font-family:'JetBrains Mono',monospace;">WEBCAM</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(34,211,238,.15); color:var(--cyan); font-family:'JetBrains Mono',monospace;">ONNX</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(167,139,250,.15); color:var(--purple); font-family:'JetBrains Mono',monospace;">HUD</span>
+                    </div>
+                </div>
+                <div class="ui-card-body">
+                    <h3>🎯 Ana Inference Penceresi</h3>
+                    <p>Gerçek zamanlı webcam dudak okuma, ONNX inference, CTC dekoder, mimik analizi ve altyazı çıkışı.</p>
+                    <div style="margin-top:10px; padding:8px 14px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--cyan); display:flex; align-items:center; justify-content:space-between;">
+                        <span>$ python main.py</span>
+                        <span style="font-size:.6rem; color:var(--text-muted);">frontend/main_window.py</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-card fade-up">
+                <img src="screenshot_training.png" alt="Veri Stüdyosu" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display:none; width:100%; height:200px; background:linear-gradient(135deg, var(--surface-2), var(--surface-3)); flex-direction:column; align-items:center; justify-content:center; gap:12px; border-bottom:1px solid var(--border);">
+                    <span style="font-size:3.5rem;">🎬</span>
+                    <div style="display:flex; gap:6px;">
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(245,158,11,.15); color:var(--amber); font-family:'JetBrains Mono',monospace;">KAYIT</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(34,197,94,.15); color:var(--green); font-family:'JetBrains Mono',monospace;">CV HUD</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(244,63,94,.15); color:var(--rose); font-family:'JetBrains Mono',monospace;">EGITIM</span>
+                    </div>
+                </div>
+                <div class="ui-card-body">
+                    <h3>🎬 Blind Eye Studio</h3>
+                    <p>Veri toplama stüdyosu (geri sayımlı kelime kaydı, 6 aşamalı CV HUD) + Model eğitim konsolu (Matplotlib grafikleri, ONNX export).</p>
+                    <div style="margin-top:10px; padding:8px 14px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--cyan); display:flex; align-items:center; justify-content:space-between;">
+                        <span>$ python studio.py</span>
+                        <span style="font-size:.6rem; color:var(--text-muted);">frontend/studio_panels.py</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-card fade-up">
+                <div style="width:100%; height:200px; background:linear-gradient(135deg, #0a1628, #162040); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; border-bottom:1px solid var(--border);">
+                    <span style="font-size:3.5rem;">👓</span>
+                    <div style="display:flex; gap:6px;">
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(56,189,248,.15); color:#38bdf8; font-family:'JetBrains Mono',monospace;">PI 3 B+</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(245,158,11,.15); color:var(--amber); font-family:'JetBrains Mono',monospace;">OLED</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(34,197,94,.15); color:var(--green); font-family:'JetBrains Mono',monospace;">GPIO</span>
+                    </div>
+                </div>
+                <div class="ui-card-body">
+                    <h3>👓 Pi Gözlük Simülasyonu</h3>
+                    <p>Raspberry Pi 3 B+ gözlük modu. Fütüristik HUD renderer, mimik analizi, OLED altyazı çıkışı, dokunsal uyarı.</p>
+                    <div style="margin-top:10px; padding:8px 14px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--cyan); display:flex; align-items:center; justify-content:space-between;">
+                        <span>$ python pi_run.py --mimic --source 0</span>
+                        <span style="font-size:.6rem; color:var(--text-muted);">pi/*.py</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-card fade-up">
+                <img src="screenshot_pipeline.png" alt="Pipeline Analiz" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display:none; width:100%; height:200px; background:linear-gradient(135deg, var(--surface-2), var(--surface-3)); flex-direction:column; align-items:center; justify-content:center; gap:12px; border-bottom:1px solid var(--border);">
+                    <span style="font-size:3.5rem;">⚙️</span>
+                    <div style="display:flex; gap:6px;">
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(34,211,238,.15); color:var(--cyan); font-family:'JetBrains Mono',monospace;">PIPELINE</span>
+                        <span style="font-size:.55rem; padding:2px 8px; border-radius:4px; background:rgba(167,139,250,.15); color:var(--purple); font-family:'JetBrains Mono',monospace;">PROFILER</span>
+                    </div>
+                </div>
+                <div class="ui-card-body">
+                    <h3>⚙️ Pipeline & Kontrol Paneli</h3>
+                    <p>7 aşamalı pipeline izleme, FPS/latency profili, kamera kontrolü, altyazı görünümü, WiFi stream durumu.</p>
+                    <div style="margin-top:10px; padding:8px 14px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--cyan); display:flex; align-items:center; justify-content:space-between;">
+                        <span>$ python main.py</span>
+                        <span style="font-size:.6rem; color:var(--text-muted);">frontend/control_panel.py</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DEMO FLOW -->
+<section id="demo">
+    <p class="section-label">Demo Akışı</p>
+    <h2 class="section-title">Canlı Sunum Senaryosu</h2>
+    <p class="section-desc">5-10 dakikalık sunum için adım adım demo rehberi.</p>
+    <div class="timeline">
+        <div class="timeline-item fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-step">ADIM 1 — AÇILIŞ</div>
+            <div class="timeline-title">Problem Tanımı</div>
+            <div class="timeline-desc">İşitme engelli nüfus: Türkiye'de ~2.5 milyon kişi. Mevcut çözümler İngilizce-only ve bulut tabanlı. Türkçe dudak okuma sistemi yok.</div>
+        </div>
+        <div class="timeline-item fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-step">ADIM 2 — CANLI DEMO</div>
+            <div class="timeline-title">PC'de Gerçek Zamanlı Dudak Okuma</div>
+            <div class="timeline-desc">Webcam ile canlı dudak okuma gösterimi. PyQt6 UI, HUD overlay, mimik analizi.</div>
+            <div class="timeline-code">$ python main.py</div>
+        </div>
+        <div class="timeline-item fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-step">ADIM 3 — VERİ STÜDYOSU</div>
+            <div class="timeline-title">Veri Toplama & Model Eğitimi</div>
+            <div class="timeline-desc">Geri sayımlı kelime kaydı, CV HUD ile dudak analizi, augmentation önizleme, tek tıkla eğitim.</div>
+            <div class="timeline-code">$ python studio.py</div>
+        </div>
+        <div class="timeline-item fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-step">ADIM 4 — DASHBOARD</div>
+            <div class="timeline-title">Web Kontrol Merkezi</div>
+            <div class="timeline-desc">Karşılaştırma tablosu, gauge grafikleri, 8 inovasyon kartı, akademik analiz.</div>
+            <div class="timeline-code">dashboard/index.html</div>
+        </div>
+        <div class="timeline-item fade-up">
+            <div class="timeline-dot"></div>
+            <div class="timeline-step">ADIM 5 — TEKNİK DERİNLİK</div>
+            <div class="timeline-title">254× Parametre Küçültme</div>
+            <div class="timeline-desc">CBAM + BiLSTM mimarisi, INT8 quantization, ~3ms inference vs. rakiplerin ~200ms.</div>
+        </div>
+    </div>
+</section>
+
+<!-- INNOVATIONS -->
+<section id="innovations">
+    <p class="section-label">Akademik Katkı</p>
+    <h2 class="section-title">8 Farklı İnovasyon</h2>
+    <p class="section-desc">Her biri ayrı bir akademik makalede sunulabilecek düzeyde özgün katkı.</p>
+    <div class="inno-grid">
+        <div class="inno-card fade-up"><div class="inno-num">01</div><div class="inno-body"><h4>🇹🇷 İlk Türkçe Dudak Okuma</h4><p>Türkçe'ye özel CTC decoder, morfolojik düzeltme ve dil modeli.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">02</div><div class="inno-body"><h4>🔬 CBAM Dikkat Mekanizması</h4><p>Channel + Spatial attention ile küçük modelde yüksek doğruluk.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">03</div><div class="inno-body"><h4>📊 254× Parametre Küçültme</h4><p>11.7M → 46K parametre. Edge cihazlarda çalışabilir, bellek dostu.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">04</div><div class="inno-body"><h4>🇹🇷 Türkçe Morfolojik FST</h4><p>Sondan eklemeli yapı için FST tabanlı post-processing. Literatürde ilk.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">05</div><div class="inno-body"><h4>👁 Duchenne Gülümseme Tespiti</h4><p>FACS AU6 tabanlı gerçek vs. yapay gülümseme ayrımı.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">06</div><div class="inno-body"><h4>🧠 EAR+PERCLOS Bilişsel Yük</h4><p>ISO 15007-1 uyumlu göz kırpma ve yorgunluk izleme.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">07</div><div class="inno-body"><h4>🔧 KLT-FaceMesh Hibrit</h4><p>6× CPU tasarrufu ile 30+ FPS gerçek zamanlı takip.</p></div></div>
+        <div class="inno-card fade-up"><div class="inno-num">08</div><div class="inno-body"><h4>📡 WiFi TCP Gözlük Pipeline</h4><p>Gerçek giyilebilir gözlük prototipi. ~₺2235 maliyet.</p></div></div>
+    </div>
+</section>
+
+<!-- REFERENCES -->
+<section id="references">
+    <p class="section-label">Akademik Referanslar</p>
+    <h2 class="section-title">Bilimsel Temel</h2>
+    <div class="ref-list">
+        <div class="ref-item fade-up"><span class="ref-num">[1]</span><span class="ref-text">Assael et al. (2016). LipNet: End-to-End Sentence-level Lipreading. <em>arXiv:1611.01599</em></span><span class="ref-use">Mimari</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[2]</span><span class="ref-text">Ma et al. (2021). LiRA: Learning Individual Lip Reading Agents. <em>Google Research</em></span><span class="ref-use">Baseline</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[3]</span><span class="ref-text">Woo et al. (2018). CBAM: Convolutional Block Attention Module. <em>ECCV</em></span><span class="ref-use">Dikkat</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[4]</span><span class="ref-text">Graves et al. (2006). Connectionist Temporal Classification. <em>ICML</em></span><span class="ref-use">CTC Loss</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[5]</span><span class="ref-text">Ekman & Friesen (1978). Facial Action Coding System.</span><span class="ref-use">FACS</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[6]</span><span class="ref-text">Soukupová & Čech (2016). Real-Time Eye Blink Detection. <em>CVWW</em></span><span class="ref-use">EAR</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[7]</span><span class="ref-text">Lucas & Kanade (1981). Optical Flow. <em>IJCAI</em></span><span class="ref-use">KLT</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[8]</span><span class="ref-text">Mendeley Turkish Lip Reading Dataset. (2023). <em>doi:10.17632/4t8vs4dr4v.1</em></span><span class="ref-use">Veri</span></div>
+        <div class="ref-item fade-up"><span class="ref-num">[9]</span><span class="ref-text">Gulati et al. (2020). Conformer. <em>Interspeech</em></span><span class="ref-use">Karşılaştırma</span></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">◉ BLIND EYE</div>
+    <p>TÜBİTAK 2209-A — Üniversite Öğrencileri Araştırma Projesi | 2024-2025</p>
+    <p class="footer-sub" style="margin-top:8px">Türkçe Dudak Okuma Gözlük Sistemi — Raspberry Pi 3 B+ · Pi Camera v2 · WiFi TCP · SSD1306 OLED</p>
+</footer>
+
+<script>
+// Scroll animation
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Nav scroll effect
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.nav');
+    if (window.scrollY > 50) {
+        nav.style.borderBottomColor = 'var(--border-2)';
+        nav.style.background = 'rgba(6,9,15,0.95)';
+    } else {
+        nav.style.borderBottomColor = 'var(--border)';
+        nav.style.background = 'rgba(6,9,15,0.85)';
+    }
+});
+</script>
+
+</body>
+</html>

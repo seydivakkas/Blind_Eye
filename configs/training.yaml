@@ -1,0 +1,109 @@
+# ═══════════════════════════════════════════════
+#  Blind Eye — Eğitim Yapılandırması (Reproducibility)
+#  TÜBİTAK 2209-A | Türkçe Dudak Okuma Prototipi
+# ═══════════════════════════════════════════════
+#
+# Bu dosya eğitim deneylerinin tekrar üretilebilirliğini sağlar.
+# Kullanım:
+#   python tools/train_v2.py --config configs/training.yaml
+#
+# IMPORTANT: Tüm rasgelelik kaynakları sabit seed ile kontrol altındadır.
+
+# ── Rasgelelik Kontrolü ──
+seed: 42                               # Tüm rasgelelik kaynakları için sabit tohum
+deterministic: true                    # torch.backends.cudnn.deterministic = True
+benchmark: false                       # torch.backends.cudnn.benchmark = False
+
+# ── Veriseti ──
+dataset:
+  root: "data/processed"               # İşlenmiş video dizini
+  labels_path: "data/processed/labels.json"
+  viseme_labels_path: "data/processed/viseme_labels.json"
+  split_ratio: 0.8                     # Train/Val oranı (stratified)
+  num_workers: 2                       # DataLoader iş parçacığı sayısı
+  pin_memory: true                     # GPU için bellek pinleme
+
+# ── Model ──
+model:
+  type: "v2_heavy"                     # "v2_heavy" veya "pi"
+  num_classes: 30                      # Türkçe karakter seti + blank
+  num_viseme_classes: 12               # Viseme sınıf sayısı + blank
+  viseme_weight: 0.5                   # λ: Viseme head loss ağırlığı
+  dropout: 0.1                        # Dropout oranı
+
+# ── Eğitim Hiper-parametreleri ──
+training:
+  # Progressive strateji: İlk aşama → İkinci aşama
+  strategy: "progressive"
+  phases:
+    - name: "warmup"
+      epochs: 10
+      lr: 0.001
+      batch_size: 16
+    - name: "fine_tune"
+      epochs: 29
+      lr: 0.0001
+      batch_size: 16
+
+  # Curriculum Learning (WER İyileştirme — 2024 Literatür)
+  curriculum:
+    enabled: false                      # true yapınca aktifleşir
+    metric: "word_length"              # Zorluk metriği: word_length veya viseme_complexity
+    warmup_epochs: 5                   # İlk N epoch sadece kolay örnekler
+    difficulty_schedule: "linear"      # "linear" veya "exponential"
+    easy_threshold: 0.3                # İlk %30 kolay veri ile başla
+    hard_ratio_final: 1.0              # Son epoch'ta tüm veri kullanılır
+
+  # Self-Distillation (WER İyileştirme — DC-TCN 2024)
+  self_distillation:
+    enabled: false                      # true yapınca aktifleşir
+    ema_decay: 0.999                   # EMA teacher model decay
+    temperature: 3.0                   # Soft target temperature
+    distill_weight: 0.3                # λ_distill: distillation loss ağırlığı
+
+  optimizer:
+    type: "AdamW"
+    weight_decay: 0.0001
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "CosineAnnealingLR"
+    eta_min: 1.0e-5
+
+  # Erken durdurma
+  early_stopping:
+    patience: 10                       # Epoch sayısı
+    metric: "val_loss"                 # İzlenen metrik
+    mode: "min"                        # "min" = düşük daha iyi
+
+# ── Veri Artırma ──
+augmentation:
+  horizontal_flip: true                # Yatay çevirme (%50 olasılık)
+  temporal_jitter: 2                   # ±2 frame temporal kaydırma
+  gaussian_noise_std: 0.02             # Gauss gürültü standart sapma
+  random_erasing: false                # Rastgele silme (deaktif)
+
+# ── Dengeleme ──
+balancing:
+  weighted_sampling: true              # WeightedRandomSampler
+  class_weights: "inverse_frequency"   # Sınıf ağırlık hesaplama yöntemi
+
+# ── Kayıt ──
+logging:
+  output_dir: "results"
+  checkpoint_dir: "models/checkpoints"
+  log_interval: 10                     # Her N batch'te bir log yaz
+  save_best_only: true                 # Sadece en iyi modeli kaydet
+
+# ── Quantization (Eğitim Sonrası) ──
+quantization:
+  enabled: true
+  type: "dynamic_int8"                 # "dynamic_int8" veya "static_int8"
+  calibration_samples: 100             # Static INT8 için kalibrasyon örneği
+
+# ── Donanım ──
+hardware:
+  device: "auto"                       # "auto", "cpu", "cuda", "mps"
+  mixed_precision: false               # FP16 karışık hassasiyet (GPU gerekli)
+  gradient_accumulation: 1             # Gradient biriktirme adımı

@@ -1,0 +1,8 @@
+{
+  "model_name": "PiLipReadingModel (MobileNetV3-Tiny + 1D-CNN)",
+  "params": 22095,
+  "best_val_loss": 2.5121612469355266,
+  "best_wer": 100.0,
+  "best_cer": 88.88091822094691,
+  "size_mb": 0.04587268829345703
+}

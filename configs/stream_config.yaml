@@ -1,0 +1,75 @@
+# ============================================================
+# Blind Eye — WiFi Stream & Gözlük Konfigürasyonu
+# ============================================================
+# Donanım: Raspberry Pi 3 Model B+ | Pi Camera Module v2 (IMX219)
+
+# --- WiFi Streaming ---
+stream:
+  protocol: "tcp"              # Saf TCP socket (JPEG frame + 4-byte header)
+  server_ip: "0.0.0.0"        # PC dinleme adresi
+  server_port: 8554           # Video stream portu
+  subtitle_port: 8555         # Altyazı geri bildirim portu
+  resolution: [640, 480]      # [genişlik, yükseklik]
+  fps: 25                     # Hedef FPS (Pi 3B+ 30fps kaldırır)
+  jpeg_quality: 75            # JPEG sıkıştırma kalitesi (1-100)
+  reconnect_interval_s: 3     # Bağlantı kopunca yeniden deneme süresi
+  timeout_s: 5                # Bağlantı timeout
+
+# --- Pi Camera Module v2 (Sony IMX219) ---
+# Pi 3 Model B+ standart 15-pin CSI portu kullanır.
+# Pi Camera Module v2 doğrudan uyumludur — ek kablo gerekmez.
+# Kutudaki standart FPC kablo yeterlidir.
+pi_camera:
+  module: "imx219"             # Sony IMX219 (Pi Camera Module v2, 8MP)
+  source: 0                    # 0 = picamera2
+  resolution: [640, 480]       # Gözlük stream için yeterli
+  fps: 25                      # Pi 3B+ 1080p30 destekler
+  rotation: 0                  # 0, 90, 180, 270
+  hflip: false                 # Yatay aynalama
+  vflip: false                 # Dikey aynalama
+  awb_mode: "auto"             # Otomatik beyaz dengesi
+  csi_port: 0                  # CSI port numarası
+  cable_type: "15pin_fpc"      # Standart 15-pin FPC (Pi 3B+ uyumlu)
+
+# --- SSD1306 OLED Ekran ---
+oled:
+  enabled: true
+  driver: "ssd1306"           # "ssd1306" | "sh1106"
+  width: 128
+  height: 64
+  i2c_address: "0x3C"
+  i2c_port: 1
+  font_size: 12
+  contrast: 200               # 0–255
+  rotate: 0                   # 0, 2 (180°)
+  scroll_speed_ms: 50         # Yeni satır scroll animasyonu
+  max_lines: 4                # Ekranda gösterilecek max satır
+
+# --- GPIO (Dokunsal Geri Bildirim) ---
+gpio:
+  enabled: true
+  led_pin: 17                 # BCM pin numaraları
+  buzzer_pin: 27
+  vibration_pin: 22
+
+# --- Pipeline ---
+pipeline:
+  mode: "stream"              # "local" | "stream"
+  queue_maxsize: 10
+  drop_oldest: true
+  chunk_frames: 6             # Her inference için frame sayısı
+
+# ============================================================
+# DONANIM BOM (Malzeme Listesi)
+# ============================================================
+# Bileşen                 | Model                              | Not
+# ─────────────────────────────────────────────────────────────────
+# İşlemci                 | Raspberry Pi 3 Model B+            | 1.4GHz, 1GB RAM, WiFi 5GHz
+# Kamera                  | Pi Camera Module v2 (Sony IMX219)  | 8MP, 1080p30, CSI 15-pin
+# Kamera Kablosu          | Kutudaki standart 15-pin FPC       | Ek kablo GEREKMEZ
+# OLED Ekran              | SSD1306 0.96" I2C (128×64)         | 3.3V, 4 pin
+# Batarya                 | LiPo 3.7V 5000mAh                 | Pi 3B+ daha fazla güç tüketir
+# Güç Regülatör           | TP4056 + MT3608 Boost 5V/2.5A      | Min 2.5A çıkış
+# MicroSD                 | 32GB Class 10 A1                   | Raspbian Lite
+# Gözlük Çerçevesi        | 3D Baskı (PETG)                    | Pi 3B+ daha büyük — yan montaj
+# ─────────────────────────────────────────────────────────────────

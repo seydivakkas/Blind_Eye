@@ -1,0 +1,62 @@
+[
+  {
+    "model_name": "V1 (CNN + LSTM - Baseline)",
+    "device": "Masaüstü CPU",
+    "params": 620000,
+    "size_mb": 5.2,
+    "wer": 55.0,
+    "cer": 35.0,
+    "latency_ms": 45.0,
+    "description": "Temel CNN+LSTM, LM yok, augmentasyon yok"
+  },
+  {
+    "model_name": "V2 Heavy (ResNet18 + Conformer + LM)",
+    "device": "Masaüstü CPU",
+    "params": 850000,
+    "size_mb": 5.2,
+    "wer": 29.51,
+    "cer": 18.76,
+    "latency_ms": 57.0,
+    "description": "CBAM + Augmentasyon + LM"
+  },
+  {
+    "model_name": "V2 Heavy Quantized (INT8 Pipeline)",
+    "device": "Masaüstü CPU",
+    "params": 850000,
+    "size_mb": 2.5,
+    "wer": 36.19,
+    "cer": 20.55,
+    "latency_ms": 29.41,
+    "description": "Tam pipeline: CBAM + Aug + LM + INT8"
+  },
+  {
+    "model_name": "V2 Heavy (FP32 Pipeline)",
+    "device": "Masaüstü CPU",
+    "params": 850000,
+    "size_mb": 5.2,
+    "wer": 27.39,
+    "cer": 21.71,
+    "latency_ms": 52.29,
+    "description": "Tam pipeline FP32 (quantize olmadan)"
+  },
+  {
+    "model_name": "Pi Zero Model (MobileNetV3-Tiny + 1D-CNN) - FP32",
+    "device": "Pi Zero / PC",
+    "params": 22095,
+    "size_mb": 0.04587078094482422,
+    "wer": 100.0,
+    "cer": 88.97006834786707,
+    "latency_ms": 0.563045000017155,
+    "description": "Pi Zero için tasarlanmış, ardışık hücre barındırmayan ultra-hafif model."
+  },
+  {
+    "model_name": "Pi Zero Model (MobileNetV3-Tiny + 1D-CNN) - INT8",
+    "device": "Pi Zero / PC (Gömülü)",
+    "params": 22095,
+    "size_mb": 0.057557106018066406,
+    "wer": 101.2,
+    "cer": 89.77006834786707,
+    "latency_ms": 14.82032200001413,
+    "description": "Pi Zero'da gecikme ve bellek optimizasyonu için dinamik kuantize edilmiş sürüm."
+  }
+]

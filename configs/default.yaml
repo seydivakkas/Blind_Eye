@@ -1,0 +1,84 @@
+# ═══════════════════════════════════════════════
+#  Blind Eye — Varsayılan Yapılandırma
+#  TÜBİTAK 2209-A | Türkçe Dudak Okuma Prototipi
+# ═══════════════════════════════════════════════
+
+# ── Model Ayarları ──
+model_path: "models/student_int8.onnx"    # ONNX model dosyası (yoksa mock mod)
+chunk_size: 6                              # Inference için gerekli frame sayısı (3-12)
+num_classes: 30                            # Türkçe karakter seti + blank token
+
+# ── Kamera Ayarları ──
+camera_id: 0                               # Kamera cihaz ID (0 = varsayılan)
+camera_fps: 30                             # Hedef FPS (15-60 arası önerilir)
+camera_resolution: [640, 480]              # [genişlik, yükseklik] piksel
+
+# ── ROI İşleme ──
+target_roi_size: [96, 96]                  # Dudak ROI boyutu [genişlik, yükseklik]
+roi_margin: 0.2                            # ROI etrafındaki boşluk oranı (0.0-0.5)
+
+# ── Performans ──
+log_path: "logs/metrics.csv"               # CSV metrik log dosyası
+profiler_window: 30                        # FPS/latency hesaplama penceresi (frame)
+frame_queue_size: 2                        # UI frame queue boyutu (düşük = düşük gecikme)
+roi_queue_size: 10                         # Inference ROI queue boyutu
+
+# ── UI Ayarları (PyQt6 Masaüstü) ──
+window_title: "Blind Eye — Türkçe Dudak Okuma Prototipi"
+window_size: [1100, 700]                   # [genişlik, yükseklik] piksel
+min_window_size: [900, 550]                # Minimum pencere boyutu
+
+# ── KLT Optik Akış Takipçi ──
+optical_flow:
+  detection_interval: 5                    # FaceMesh kaç karede bir çalışır
+  max_drift: 15.0                          # Re-detection tetik eşiği (piksel)
+  fb_threshold: 2.0                        # Forward-backward hata eşiği (piksel)
+
+# ── Mimik Tespiti ──
+expression:
+  threshold: 0.35                          # Nötr/duygu ayrım eşiği
+  fps: 30.0                               # FPS (kinematik hesaplama için)
+
+# ── Kinematik Analiz ──
+kinematic:
+  buffer_size: 30                          # Ring buffer boyutu (kare)
+  micro_accel_threshold: 0.5               # Mikro-ifade ivme eşiği
+  micro_min_frames: 1                      # Mikro-ifade min süre (kare)
+  micro_max_frames: 6                      # Mikro-ifade max süre (kare)
+
+# ── Bilişsel Yük İzleyici ──
+cognitive:
+  ear_threshold: 0.22                      # EAR eşik değeri (altı = göz kapalı)
+  window_sec: 60                           # PERCLOS pencere boyutu (saniye)
+  consec_frames: 2                         # Kırpma için min ardışık kapalı kare
+
+# ── Dil Modeli (LM Decoder) ──
+lm_decoder:
+  lm_path: null                            # ARPA model yolu (null = greedy CTC)
+  alpha: 0.5                               # LM ağırlığı
+  beta: 1.0                                # Kelime ekleme bonusu
+  beam_width: 100                          # Beam genişliği
+
+# ── OLED (Gözlük Altyazı) ──
+oled:
+  enabled: false                           # OLED varsayılan kapalı (PC'de kullanılmaz)
+  driver: "ssd1306"                        # SSD1306 128×64 I2C
+
+# ── GPIO Uyarı Sistemi ──
+gpio:
+  enabled: false                           # GPIO varsayılan kapalı (PC'de mock)
+  mock: true                               # true = GPIO olmadan log yaz
+
+# ── Pi 3 Model B+ Ayarları ──
+pi:
+  model_path: "models/pi_model_int8.onnx"  # Pi ONNX modeli
+  seq_len: 6                               # Giriş dizi uzunluğu
+  roi_size: 96                             # ROI kırpma boyutu
+  width: 640                               # Kamera genişliği
+  height: 480                              # Kamera yüksekliği
+
+# ── HUD Renderer (Pi 3 B+) ──
+hud:
+  panel_width: 180                         # Sağ yan panel genişliği (piksel)
+  temp_throttle_sec: 2.0                   # CPU sıcaklık okuma aralığı (saniye)
+

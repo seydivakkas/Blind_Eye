@@ -1,0 +1,78 @@
+{
+  "description": "Ingilizce-Turkce viseme esleme tablosu. Ayni dudak sekli farkli dillerde farkli sesleri temsil eder.",
+  "version": "1.0",
+  "viseme_groups": {
+    "V1_bilabial": {
+      "description": "Dudaklar kapali, patlayici/nazal",
+      "en_phonemes": ["p", "b", "m"],
+      "tr_phonemes": ["p", "b", "m"],
+      "tr_chars": ["p", "b", "m"],
+      "visual_similarity": 1.0
+    },
+    "V2_labiodental": {
+      "description": "Alt dudak ust dislere degir",
+      "en_phonemes": ["f", "v"],
+      "tr_phonemes": ["f", "v"],
+      "tr_chars": ["f", "v"],
+      "visual_similarity": 1.0
+    },
+    "V3_dental_alveolar": {
+      "description": "Dil ucu dislere/damaga yakin",
+      "en_phonemes": ["t", "d", "n", "l", "s", "z"],
+      "tr_phonemes": ["t", "d", "n", "l", "s", "z"],
+      "tr_chars": ["t", "d", "n", "l", "s", "z"],
+      "visual_similarity": 0.9
+    },
+    "V4_postalveolar": {
+      "description": "Dil arkasi damaga yakin, dudaklar hafif yuvarlak",
+      "en_phonemes": ["sh", "zh", "ch", "j"],
+      "tr_phonemes": ["sh", "ch", "j"],
+      "tr_chars": ["\u015f", "\u00e7", "c", "j"],
+      "visual_similarity": 0.85
+    },
+    "V5_velar": {
+      "description": "Dil arkasi yumusak damak",
+      "en_phonemes": ["k", "g", "ng"],
+      "tr_phonemes": ["k", "g", "gh"],
+      "tr_chars": ["k", "g", "\u011f"],
+      "visual_similarity": 0.8
+    },
+    "V6_rounded_back": {
+      "description": "Dudaklar yuvarlak, arka unluler",
+      "en_phonemes": ["w", "oo", "u", "o"],
+      "tr_phonemes": ["o", "oe", "u", "ue"],
+      "tr_chars": ["o", "\u00f6", "u", "\u00fc"],
+      "visual_similarity": 0.9
+    },
+    "V7_open_front": {
+      "description": "Agiz acik, on unluler",
+      "en_phonemes": ["aa", "ah", "ae", "eh", "ih"],
+      "tr_phonemes": ["a", "e", "i", "dotless_i"],
+      "tr_chars": ["a", "e", "i", "\u0131"],
+      "visual_similarity": 0.75
+    },
+    "V8_glottal_glide": {
+      "description": "Glottal/glide sesler, gorunurlugu dusuk",
+      "en_phonemes": ["h", "y", "r"],
+      "tr_phonemes": ["h", "y", "r"],
+      "tr_chars": ["h", "y", "r"],
+      "visual_similarity": 0.7
+    }
+  },
+  "transfer_notes": {
+    "high_transfer": "V1-V3: Dudak ve dil pozisyonu neredeyse ayni, dogrudan transfer mumkun",
+    "medium_transfer": "V4-V6: Benzer ama Turkce ozel sesler (ş, ç, ğ, ö, ü) icin fine-tune gerekli",
+    "low_transfer": "V7-V8: Turkce unlu uyumu nedeniyle Ingilizce'den farkli dagilim, en cok fine-tune gereken grup"
+  },
+  "turkish_specific": {
+    "vowel_harmony": "Turkce unluleri on/arka ve duz/yuvarlak olarak siniflanir. Bu dudak okumada onemli cunku ayni kelime icerisinde unluler tutarli dudak sekilleri uretir.",
+    "unique_chars": {
+      "\u00e7": "V4_postalveolar — Ingilizce 'ch' ile ayni viseme",
+      "\u015f": "V4_postalveolar — Ingilizce 'sh' ile ayni viseme",
+      "\u011f": "V5_velar — Ingilizce 'ng'ye benzer ama daha yumusak",
+      "\u00f6": "V6_rounded_back — Almanca oe'ye benzer, Ingilizce yok",
+      "\u00fc": "V6_rounded_back — Almanca ue'ye benzer, Ingilizce yok",
+      "\u0131": "V7_open_front — Ingilizce 'uh'a benzer ama daha arka"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+# ── Raspberry Pi 3 Model B+ Edge-AI Gereksinimleri ──
+# PyQt6 sadece masaüstü geliştirmede gerekli (Pi'de kullanılmaz)
+PyQt6>=6.5.0
+
+# Çekirdek bağımlılıklar
+opencv-python>=4.8.0
+numpy>=1.24.0
+psutil>=5.9.0
+pyyaml>=6.0
+
+# Çıkarım motoru
+# onnxruntime>=1.16.0  # Pi'de: pip install onnxruntime
+
+# Yüz tespiti (Pi'de opsiyonel — sadece --mimic modunda gerekli)
+# mediapipe>=0.10.0    # Pi'de: pip install mediapipe-rpi4
+
+# SSH/SFTP ile Pi 3 B+'a otomatik model deploy
+paramiko>=3.0.0
+
+# ── LIRA-Gen Türkçe — Otomatik Veri Seti Üretimi ──
+# YouTube video + altyazı indirme
+yt-dlp>=2024.1.0
+# Shot detection (sahne bölme)
+scenedetect[opencv]>=0.6.0
+# Yüz tespiti + dlib 68-nokta landmark
+face-recognition>=1.3.0
+# Video kesme ve işleme
+moviepy>=2.0.0
+# Veri analizi
+pandas>=2.0.0

@@ -1,0 +1,18 @@
+\begin{table}[h]
+\centering
+\caption{Ablation Study Sonuçları}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Deney} & \textbf{WER\%} & \textbf{CER\%} & \textbf{Latency (ms)} & \textbf{Boyut (MB)} \\
+\midrule
+baseline & 55.0 & 35.0 & 45.0 & 5.2 \\
++cbam & 50.2 & 31.4 & 49.7 & 5.2 \\
++augment & 48.5 & 31.3 & 45.0 & 5.2 \\
++lm & 42.3 & 26.0 & 50.4 & 5.2 \\
++cbam+augment & 41.7 & 24.4 & 48.0 & 5.2 \\
++cbam+augment+lm & 29.5 & 18.8 & 57.0 & 5.2 \\
+full_pipeline & 36.2 & 20.6 & 29.4 & 2.5 \\
+full_pipeline_fp32 & 27.4 & 21.7 & 52.3 & 5.2 \\
+\bottomrule
+\end{tabular}
+\end{table}

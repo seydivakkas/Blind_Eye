@@ -1,0 +1,64 @@
+# ═══════════════════════════════════════════════
+#  Blind Eye — .gitignore
+#  TÜBİTAK 2209-A | Türkçe Dudak Okuma Projesi
+# ═══════════════════════════════════════════════
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs (auto-generated)
+logs/*.csv
+logs/*.log
+studio_err.log
+
+# ── Büyük Model Dosyaları (Git LFS kullanılmıyorsa) ──
+# PyTorch checkpoint'lar (çok büyük: 9MB - 70MB)
+models/checkpoints/*.pth
+models/pretrained/
+
+# ── Büyük Veri Dosyaları ──
+# Ham veri seti (Mendeley zip ~6.8GB)
+data/raw/
+# İşlenmiş veri (kullanıcı tarafından üretilir)
+data/processed/
+data/augmented/
+
+# ── Video Pipeline Çıktıları ──
+video/
+
+# PyQt cache
+*.qmlc
+*.jsc
+
+# pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Misc
+*.bak
+*.tmp

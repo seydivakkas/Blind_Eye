@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Eye — Kullanım Rehberi & Proje Adımları</title>
+    <meta name="description" content="Blind Eye Türkçe dudak okuma gözlük sistemi kurulum, WiFi stream ve OLED kullanım rehberi. Pi 3 B+ & Pi Camera v2.">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ====== DESIGN TOKENS (ui-ux-pro-max: Dark OLED + Academic) ====== */
+        :root {
+            --bg-base: #050810;
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-card: #141c30;
+            --bg-card-hover: #1a2540;
+            --bg-code: #0b1120;
+            --border: rgba(34,197,94,0.12);
+            --border-hover: rgba(34,197,94,0.35);
+            --accent: #22C55E;
+            --accent-glow: rgba(34,197,94,0.2);
+            --accent-2: #38BDF8;
+            --accent-3: #A78BFA;
+            --accent-4: #F59E0B;
+            --accent-5: #F472B6;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --font-heading: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --gradient-brand: linear-gradient(135deg, #22C55E 0%, #38BDF8 100%);
+            --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            --gradient-cool: linear-gradient(135deg, #A78BFA 0%, #38BDF8 100%);
+            --radius: 14px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient BG */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 700px 500px at 10% 10%, rgba(34,197,94,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 600px 400px at 90% 80%, rgba(56,189,248,0.03) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ====== UTILITIES ====== */
+        .container { max-width: 1120px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+        /* ====== NAVBAR ====== */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(5,8,16,0.88);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+        }
+        .navbar-inner {
+            max-width: 1120px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 56px;
+        }
+        .nav-brand {
+            font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .nav-links { display: flex; gap: 2px; flex-wrap: wrap; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none;
+            font-size: 0.76rem; font-weight: 700; letter-spacing: 0.3px;
+            padding: 6px 12px; border-radius: 8px;
+            transition: color var(--transition), background var(--transition);
+            cursor: pointer;
+        }
+        .nav-links a:hover { color: var(--text-primary); background: rgba(34,197,94,0.08); }
+        .nav-link-accent {
+            background: rgba(34,197,94,0.1) !important; color: var(--accent) !important;
+            border: 1px solid rgba(34,197,94,0.2);
+        }
+        .nav-link-accent:hover { background: rgba(34,197,94,0.18) !important; }
+
+        /* ====== HERO ====== */
+        .hero { text-align: center; padding: 72px 0 48px; }
+        .hero-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 16px; border-radius: 100px;
+            background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+            font-size: 0.76rem; font-weight: 700; color: var(--accent);
+            letter-spacing: 0.8px; text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-tag svg { width: 14px; height: 14px; }
+        .hero h1 {
+            font-family: var(--font-heading); font-size: clamp(2.1rem, 5vw, 3.2rem);
+            font-weight: 900; line-height: 1.15;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 14px;
+        }
+        .hero p { font-size: 1.05rem; color: var(--text-secondary); max-width: 620px; margin: 0 auto 28px; }
+        .hero-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 22px; border-radius: 10px; border: none;
+            font-family: var(--font-body); font-size: 0.85rem; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn svg { width: 16px; height: 16px; }
+        .btn-primary {
+            background: var(--gradient-brand); color: #fff;
+            box-shadow: 0 4px 20px rgba(34,197,94,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,0.35); }
+        .btn-ghost {
+            background: transparent; color: var(--accent);
+            border: 1px solid rgba(34,197,94,0.3);
+        }
+        .btn-ghost:hover { background: rgba(34,197,94,0.08); border-color: var(--accent); }
+
+        /* ====== SECTION ====== */
+        .section { padding: 56px 0; }
+        .section-head { margin-bottom: 36px; }
+        .section-head h2 {
+            font-family: var(--font-heading); font-size: 1.7rem; font-weight: 800;
+            margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-head h2 svg { width: 22px; height: 22px; color: var(--accent); flex-shrink: 0; }
+        .section-head p { color: var(--text-secondary); max-width: 560px; }
+        .accent-bar { width: 40px; height: 3px; background: var(--gradient-brand); border-radius: 2px; margin-top: 10px; }
+
+        /* ====== CARDS ====== */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px;
+            transition: all var(--transition); position: relative; overflow: hidden;
+        }
+        .card::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--gradient-brand); opacity: 0; transition: opacity var(--transition);
+        }
+        .card:hover {
+            border-color: var(--border-hover); background: var(--bg-card-hover);
+            transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .card:hover::after { opacity: 1; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+        /* ====== TIMELINE ====== */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 14px; top: 0; bottom: 0;
+            width: 2px; background: linear-gradient(180deg, var(--accent), var(--accent-2), var(--accent-3));
+            border-radius: 2px;
+        }
+        .tl-step {
+            position: relative; margin-bottom: 28px;
+            padding: 22px 24px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .tl-step:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateX(3px); }
+        .tl-dot {
+            position: absolute; left: -34px; top: 26px;
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid var(--accent); background: var(--bg-base);
+            z-index: 2; transition: all var(--transition);
+        }
+        .tl-dot.done { background: var(--accent); box-shadow: 0 0 10px rgba(34,197,94,0.5); }
+        .tl-dot.blue { border-color: var(--accent-2); }
+        .tl-dot.blue.done { background: var(--accent-2); box-shadow: 0 0 10px rgba(56,189,248,0.5); }
+        .tl-dot.purple { border-color: var(--accent-3); }
+        .tl-dot.purple.done { background: var(--accent-3); box-shadow: 0 0 10px rgba(167,139,250,0.5); }
+        .tl-dot.amber { border-color: var(--accent-4); }
+        .tl-dot.amber.done { background: var(--accent-4); box-shadow: 0 0 10px rgba(245,158,11,0.5); }
+        .tl-label {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--accent); margin-bottom: 6px;
+        }
+        .tl-badge {
+            padding: 2px 8px; border-radius: 6px;
+            background: rgba(34,197,94,0.12); font-size: 0.66rem;
+        }
+        .tl-step h3 { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+        .tl-step p { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 12px; }
+
+        /* ====== CODE BLOCK ====== */
+        .code-block {
+            background: var(--bg-code); border: 1px solid rgba(34,197,94,0.08);
+            border-radius: 10px; overflow: hidden; margin: 10px 0;
+        }
+        .code-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 7px 14px; background: rgba(34,197,94,0.04);
+            border-bottom: 1px solid rgba(34,197,94,0.06);
+        }
+        .code-lang { font-size: 0.68rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; }
+        .code-copy {
+            padding: 2px 10px; border-radius: 6px; border: 1px solid rgba(34,197,94,0.15);
+            background: transparent; color: var(--text-muted); cursor: pointer;
+            font-size: 0.68rem; font-family: var(--font-body); transition: all var(--transition);
+        }
+        .code-copy:hover { border-color: var(--accent); color: var(--accent); }
+        .code-copy.copied { border-color: var(--accent); color: var(--accent); }
+        .code-body { padding: 14px 18px; overflow-x: auto; }
+        .code-body pre {
+            margin: 0; font-family: var(--font-code); font-size: 0.8rem;
+            line-height: 1.65; color: var(--text-primary); white-space: pre; tab-size: 4;
+        }
+        .c-cmt { color: var(--text-muted); }
+        .c-cmd { color: var(--accent); }
+        .c-flag { color: var(--accent-2); }
+        .c-out { color: var(--text-muted); font-style: italic; }
+        .c-hi { color: var(--accent-4); }
+
+        /* ====== REQUIREMENTS ====== */
+        .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+        .req-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; border-radius: 10px;
+            background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.06);
+            transition: all var(--transition); cursor: default;
+        }
+        .req-item:hover { border-color: rgba(34,197,94,0.2); background: rgba(34,197,94,0.07); }
+        .req-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .req-icon svg { width: 18px; height: 18px; }
+        .req-icon.green { background: rgba(34,197,94,0.15); color: var(--accent); }
+        .req-icon.blue { background: rgba(56,189,248,0.15); color: var(--accent-2); }
+        .req-icon.purple { background: rgba(167,139,250,0.15); color: var(--accent-3); }
+        .req-icon.amber { background: rgba(245,158,11,0.15); color: var(--accent-4); }
+        .req-text strong { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); }
+        .req-text span { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* ====== MODE CARDS ====== */
+        .mode-card {
+            padding: 22px; border-radius: var(--radius);
+            border: 1px solid var(--border); background: var(--bg-card);
+            transition: all var(--transition); cursor: default;
+        }
+        .mode-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+        .mode-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 100px;
+            font-size: 0.68rem; font-weight: 700; margin-bottom: 10px;
+        }
+        .mode-badge.mock { background: rgba(245,158,11,0.12); color: var(--warning); }
+        .mode-badge.real { background: rgba(34,197,94,0.12); color: var(--success); }
+        .mode-badge.stream { background: rgba(56,189,248,0.12); color: var(--accent-2); }
+        .mode-card h4 { font-family: var(--font-heading); font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+        .mode-card p { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px; }
+
+        /* ====== ARCHITECTURE FLOW ====== */
+        .arch-flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 20px 0; }
+        .arch-node {
+            width: 100%; max-width: 560px;
+            padding: 14px 20px; border-radius: 12px;
+            background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.12);
+            display: flex; align-items: center; gap: 14px;
+            transition: all var(--transition); cursor: default;
+        }
+        .arch-node:hover { border-color: var(--accent); background: rgba(34,197,94,0.08); }
+        .arch-icon {
+            width: 38px; height: 38px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .arch-icon svg { width: 18px; height: 18px; }
+        .arch-icon.g { background: rgba(34,197,94,0.15); color: var(--accent); }
+        .arch-icon.b { background: rgba(56,189,248,0.15); color: var(--accent-2); }
+        .arch-icon.p { background: rgba(167,139,250,0.15); color: var(--accent-3); }
+        .arch-icon.a { background: rgba(245,158,11,0.15); color: var(--accent-4); }
+        .arch-icon.pk { background: rgba(244,114,182,0.15); color: var(--accent-5); }
+        .arch-info h4 { font-size: 0.85rem; font-weight: 700; }
+        .arch-info p { font-size: 0.75rem; color: var(--text-secondary); }
+        .arch-arrow {
+            width: 2px; height: 20px;
+            background: linear-gradient(180deg, var(--accent), rgba(34,197,94,0.15));
+            position: relative;
+        }
+        .arch-arrow::after {
+            content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent;
+            border-top: 5px solid var(--accent);
+        }
+
+        /* ====== CALLOUT ====== */
+        .callout {
+            padding: 14px 18px; border-radius: 10px; margin: 12px 0;
+            display: flex; gap: 10px; align-items: flex-start;
+            font-size: 0.82rem;
+        }
+        .callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+        .callout-info { background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.12); color: var(--text-secondary); }
+        .callout-info svg { color: var(--accent-2); }
+        .callout-success { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.12); color: var(--text-secondary); }
+        .callout-success svg { color: var(--accent); }
+        .callout-warn { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.12); color: var(--text-secondary); }
+        .callout-warn svg { color: var(--accent-4); }
+        .callout strong { color: var(--text-primary); }
+
+        /* ====== BOM TABLE ====== */
+        .bom-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .bom-table th {
+            text-align: left; padding: 10px 14px;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 700;
+        }
+        .bom-table td { padding: 10px 14px; font-size: 0.82rem; border-bottom: 1px solid rgba(34,197,94,0.04); }
+        .bom-table tr:hover td { background: rgba(34,197,94,0.03); }
+        .bom-table .total td { font-weight: 700; color: var(--accent); border-top: 2px solid var(--border); }
+
+        /* ====== TROUBLESHOOT ====== */
+        .trouble-item {
+            padding: 14px 18px; border-radius: 10px;
+            background: rgba(239,68,68,0.03); border: 1px solid rgba(239,68,68,0.08);
+            margin-bottom: 10px; transition: all var(--transition);
+        }
+        .trouble-item:hover { border-color: rgba(239,68,68,0.2); }
+        .trouble-err { font-family: var(--font-code); font-size: 0.8rem; color: var(--danger); margin-bottom: 4px; font-weight: 600; }
+        .trouble-fix { font-size: 0.8rem; color: var(--text-secondary); }
+        .trouble-fix code {
+            padding: 2px 6px; border-radius: 4px; background: rgba(34,197,94,0.08);
+            color: var(--accent); font-family: var(--font-code); font-size: 0.76rem;
+        }
+
+        /* ====== FOOTER ====== */
+        .footer { text-align: center; padding: 44px 0 24px; border-top: 1px solid var(--border); margin-top: 32px; }
+        .footer p { font-size: 0.78rem; color: var(--text-muted); }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { opacity: 0; transform: translateY(16px); transition: all 0.5s ease-out; }
+        .fade-up.vis { opacity: 1; transform: translateY(0); }
+
+        /* ====== SCROLLBAR ====== */
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.25); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(34,197,94,0.45); }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 860px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero { padding: 48px 0 32px; }
+        }
+        @media (max-width: 480px) {
+            .req-grid { grid-template-columns: 1fr 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        /* ====== SVG ICON INLINE ====== */
+        .icon { display: inline-flex; align-items: center; }
+    </style>
+</head>
+<body>
+
+<!-- ====== NAVBAR ====== -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <div class="nav-brand">Blind Eye</div>
+        <div class="nav-links">
+            <a href="#overview">Genel Bakış</a>
+            <a href="#hardware">Donanım</a>
+            <a href="#install">Kurulum</a>
+            <a href="#modes">Çalıştırma</a>
+            <a href="#pipeline">Pipeline</a>
+            <a href="#training">Eğitim</a>
+            <a href="#troubleshoot">Sorun Giderme</a>
+            <a href="academic_analysis.html" class="nav-link-accent">Akademik Analiz</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Adım Adım Kullanım Rehberi
+        </div>
+        <h1>Blind Eye Nasıl Kullanılır?</h1>
+        <p>Donanım montajından WiFi stream'e, pipeline'dan OLED altyazıya — projenin her adımını keşfedin</p>
+        <div class="hero-actions">
+            <a href="#install" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Hemen Başla
+            </a>
+            <a href="academic_analysis.html" class="btn btn-ghost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Akademik Analiz
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 1. GENEL BAKIŞ ====== -->
+<section class="section" id="overview">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Proje Genel Bakış
+            </h2>
+            <p>Blind Eye'ın ne yaptığını ve nasıl çalıştığını anlayın</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="card fade-up" style="padding:28px;">
+            <h3 style="font-family:var(--font-heading);font-size:1.2rem;font-weight:700;margin-bottom:14px;">Blind Eye Nedir?</h3>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:20px;">
+                <strong>Blind Eye</strong>, işitme engelli bireylerin günlük iletişimini desteklemek amacıyla geliştirilen,
+                kamera görüntüsünden <strong>gerçek zamanlı Türkçe dudak okuma</strong> yapan gözlük sistemidir.
+                TÜBİTAK 2209-A programı kapsamında geliştirilmektedir.
+                <strong>Raspberry Pi 3 Model B+</strong> üzerinde kamera ile konuşan kişinin yüzünü çeker,
+                WiFi üzerinden PC'ye stream eder, PC'de derin öğrenme inference yapar ve sonucu
+                gözlükteki <strong>SSD1306 OLED</strong> ekranda altyazı olarak gösterir.
+            </p>
+
+            <!-- Architecture Flow -->
+            <h4 style="text-align:center;color:var(--text-muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;">Uçtan Uca Veri Akışı</h4>
+            <div class="arch-flow">
+                <div class="arch-node">
+                    <div class="arch-icon b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+                    <div class="arch-info"><h4>Pi Camera v2 (IMX219)</h4><p>8MP, 1080p30 — CSI 15-pin doğrudan bağlantı</p></div>
+                </div>
+                <div class="arch-arrow"></div>
+                <div class="arch-node">
+                    <div class="arch-icon g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+                    <div class="arch-info"><h4>WiFi TCP Stream</h4><p>Pi 3 B+ → PC (640×480, 25 FPS, JPEG over TCP socket)</p></div>
+                </div>
+                <div class="arch-arrow"></div>
+                <div class="arch-node">
+                    <div class="arch-icon p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                    <div class="arch-info"><h4>PC Inference (ONNX)</h4><p>CNN+CBAM+BiLSTM → CTC Decoder → Türkçe kelime</p></div>
+                </div>
+                <div class="arch-arrow"></div>
+                <div class="arch-node">
+                    <div class="arch-icon a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+                    <div class="arch-info"><h4>SSD1306 OLED (128×64)</h4><p>Altyazı HUD — WiFi üzerinden gözlüğe geri gönderilir</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 2. DONANIM ====== -->
+<section class="section" id="hardware">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                Donanım & Malzeme Listesi
+            </h2>
+            <p>Pi 3 Model B+ gözlük kiti için gereken bileşenler</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="card fade-up" style="padding:28px;">
+            <table class="bom-table">
+                <thead><tr><th>Bileşen</th><th>Model</th><th>Not</th><th style="text-align:right">Fiyat</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>İşlemci</strong></td><td>Raspberry Pi 3 Model B+</td><td>1.4GHz, 1GB RAM, WiFi 5GHz</td><td style="text-align:right">~₺1500</td></tr>
+                    <tr><td><strong>Kamera</strong></td><td>Pi Camera Module v2 (IMX219)</td><td>8MP, 1080p30, 15-pin CSI</td><td style="text-align:right">~₺400</td></tr>
+                    <tr><td><strong>Kamera Kablosu</strong></td><td>Standart 15-pin FPC</td><td>Kutuda dahil — ek kablo gerekmez</td><td style="text-align:right">₺0</td></tr>
+                    <tr><td><strong>OLED Ekran</strong></td><td>SSD1306 0.96" I2C (128×64)</td><td>3.3V, 4 pin</td><td style="text-align:right">~₺45</td></tr>
+                    <tr><td><strong>Batarya</strong></td><td>LiPo 3.7V 5000mAh</td><td>Pi 3B+ yüksek güç tüketimi</td><td style="text-align:right">~₺120</td></tr>
+                    <tr><td><strong>Güç Regülatör</strong></td><td>TP4056 + MT3608 Boost 5V/2.5A</td><td>Min 2.5A çıkış</td><td style="text-align:right">~₺30</td></tr>
+                    <tr><td><strong>Çerçeve</strong></td><td>3D Baskı (PETG)</td><td>Yan montaj — Pi 3B+ daha büyük</td><td style="text-align:right">~₺40</td></tr>
+                    <tr><td><strong>MicroSD</strong></td><td>32GB Class 10 A1</td><td>Raspbian Lite</td><td style="text-align:right">~₺100</td></tr>
+                    <tr class="total"><td colspan="3"><strong>TOPLAM</strong></td><td style="text-align:right"><strong>~₺2235</strong></td></tr>
+                </tbody>
+            </table>
+            <div class="callout callout-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div><strong>Pi 3 B+ standart 15-pin CSI portu kullanır.</strong> Dönüştürücü kablo gerekmez — Pi Camera v2 kutudaki kablo ile doğrudan bağlanır.</div>
+            </div>
+        </div>
+
+        <div class="grid-2 fade-up" style="margin-top:20px;">
+            <div class="card">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:10px;">PC Gereksinimleri (İnference)</h4>
+                <div class="req-grid">
+                    <div class="req-item"><div class="req-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg></div><div class="req-text"><strong>Python 3.10+</strong><span>Önerilen: 3.11</span></div></div>
+                    <div class="req-item"><div class="req-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="req-text"><strong>RAM: 4 GB+</strong><span>Önerilen: 8 GB</span></div></div>
+                    <div class="req-item"><div class="req-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/></svg></div><div class="req-text"><strong>2+ Çekirdek CPU</strong><span>GPU gerekmez</span></div></div>
+                    <div class="req-item"><div class="req-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></div><div class="req-text"><strong>Disk: 2 GB</strong><span>Win/Linux/macOS</span></div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:10px;">I2C Bağlantı Şeması (OLED)</h4>
+                <div class="code-block"><div class="code-body"><pre><span class="c-cmt">Pi 3 B+ GPIO        SSD1306 OLED</span>
+<span class="c-cmd">Pin 1  (3.3V)</span>  ───→  <span class="c-flag">VCC</span>
+<span class="c-cmd">Pin 3  (SDA)</span>  ───→  <span class="c-flag">SDA</span>
+<span class="c-cmd">Pin 5  (SCL)</span>  ───→  <span class="c-flag">SCL</span>
+<span class="c-cmd">Pin 6  (GND)</span>  ───→  <span class="c-flag">GND</span>
+
+<span class="c-cmt">I2C Adresi: 0x3C (varsayılan)</span></pre></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 3. KURULUM ====== -->
+<section class="section" id="install">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                Kurulum
+            </h2>
+            <p>3 adımda projeyi kurun ve çalıştırın</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="timeline fade-up">
+            <div class="tl-step">
+                <div class="tl-dot done"></div>
+                <div class="tl-label"><span class="tl-badge">Adım 1</span> Sanal Ortam</div>
+                <h3>Python Sanal Ortam Oluştur</h3>
+                <p>Bağımlılık çakışmalarını önlemek için izole ortam.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmt"># Sanal ortam oluştur</span>
+<span class="c-cmd">python</span> -m venv .venv
+
+<span class="c-cmt"># Windows</span>
+<span class="c-cmd">.venv\Scripts\activate</span>
+
+<span class="c-cmt"># Linux / macOS</span>
+<span class="c-cmd">source</span> .venv/bin/activate</pre></div></div>
+            </div>
+
+            <div class="tl-step">
+                <div class="tl-dot done blue"></div>
+                <div class="tl-label"><span class="tl-badge">Adım 2</span> Bağımlılıklar</div>
+                <h3>pip install</h3>
+                <p>Tüm Python bağımlılıklarını tek komutla kurun.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmd">pip</span> install -r requirements.txt
+
+<span class="c-cmt"># Pi gözlük bağımlılıkları (OLED, Pillow)</span>
+<span class="c-cmd">python</span> setup.py <span class="c-flag">--glasses</span></pre></div></div>
+            </div>
+
+            <div class="tl-step">
+                <div class="tl-dot done purple"></div>
+                <div class="tl-label"><span class="tl-badge">Adım 3</span> Doğrulama</div>
+                <h3>Hızlı Doğrulama</h3>
+                <p>Her şeyin düzgün kurulduğunu doğrulayın.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmd">python</span> -c "
+from backend.pipeline import PipelineController
+from backend.decoder import TurkishCTCDecoder
+import numpy as np
+
+p = PipelineController('models/student_int8.onnx')
+print('Pipeline: OK')
+
+d = TurkishCTCDecoder()
+logits = np.random.randn(1, 6, 31).astype(np.float32)
+text, conf = d.decode(logits)
+print(f'Decoder: OK → [{text}] conf={conf:.2f}')
+"</pre></div></div>
+                <div class="callout callout-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <div>Beklenen çıktı: <code style="background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;color:var(--accent);font-family:var(--font-code);font-size:0.78rem;">Pipeline: OK</code> ve <code style="background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;color:var(--accent);font-family:var(--font-code);font-size:0.78rem;">Decoder: OK</code></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 4. ÇALIŞTIRMA MODLARI ====== -->
+<section class="section" id="modes">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Çalıştırma Modları
+            </h2>
+            <p>Sistem üç farklı modda çalışabilir</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="grid-3 fade-up">
+            <div class="mode-card">
+                <div class="mode-badge mock">MOCK MOD</div>
+                <h4>Hemen Başla — Model Gerekmez</h4>
+                <p>ONNX model yoksa sistem otomatik mock moda geçer. Tüm UI çalışır.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmd">python</span> main.py</pre></div></div>
+            </div>
+            <div class="mode-card">
+                <div class="mode-badge real">GERÇEK MOD</div>
+                <h4>ONNX Model ile İnference</h4>
+                <p>Eğitilmiş model ile gerçek zamanlı dudak okuma.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmd">python</span> tools/export_to_onnx.py
+<span class="c-cmd">python</span> main.py</pre></div></div>
+            </div>
+            <div class="mode-card">
+                <div class="mode-badge stream">GÖZLÜK STREAM</div>
+                <h4>WiFi Stream + OLED Altyazı</h4>
+                <p>Pi kamera → WiFi → PC inference → OLED altyazı.</p>
+                <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmt"># Pi tarafında:</span>
+<span class="c-cmd">python</span> pi_run.py <span class="c-flag">--stream \
+  --server-ip 192.168.1.100 \
+  --oled</span></pre></div></div>
+            </div>
+        </div>
+
+        <div class="card fade-up" style="margin-top:20px;padding:24px;">
+            <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:12px;">Pi 3 B+ Tüm Komutlar</h4>
+            <div class="code-block"><div class="code-head"><span class="code-lang">Terminal</span><button class="code-copy" onclick="copyCode(this)">Kopyala</button></div><div class="code-body"><pre><span class="c-cmt"># Local mod — PC webcam ile test</span>
+<span class="c-cmd">python</span> pi_run.py <span class="c-flag">--mimic --source 0</span>
+
+<span class="c-cmt"># WiFi stream modu — gözlük → PC → OLED</span>
+<span class="c-cmd">python</span> pi_run.py <span class="c-flag">--stream --server-ip 192.168.1.100 --oled</span>
+
+<span class="c-cmt"># KenLM beam search (dil modeli)</span>
+<span class="c-cmd">python</span> pi_run.py <span class="c-flag">--lm models/tr_3gram.arpa</span>
+
+<span class="c-cmt"># Performans benchmark (5 dk)</span>
+<span class="c-cmd">python</span> pi_run.py <span class="c-flag">--benchmark</span></pre></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 5. PIPELINE ====== -->
+<section class="section" id="pipeline">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Tam Veri Pipeline'ı
+            </h2>
+            <p>Ham videodan eğitime kadar 7 adımlık tam pipeline</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="timeline fade-up">
+            <div class="tl-step"><div class="tl-dot done"></div><div class="tl-label"><span class="tl-badge">1</span> Test Verisi</div><h3>Sentetik Video Üretimi</h3><p>Sinüsoidal dudak animasyonlu test videoları.</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/generate_test_data.py <span class="c-flag">--words 10 --videos 5 --frames 30</span></pre></div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done blue"></div><div class="tl-label"><span class="tl-badge">2</span> Mendeley Dataset</div><h3>Gerçek Türkçe Dudak Okuma Verisi</h3><p>2,335 gerçek klip — 10 kelime × ~230 klip.</p><div class="callout callout-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div><a href="https://doi.org/10.17632/4t8vs4dr4v.1" style="color:var(--accent-2);" target="_blank">doi:10.17632/4t8vs4dr4v.1</a> (CC BY 4.0)</div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done purple"></div><div class="tl-label"><span class="tl-badge">3</span> ROI</div><h3>Video → Dudak ROI Çıkarma</h3><p>MediaPipe ile dudak bölgesi [96, 96, 1] float32.</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/preprocess_dataset.py <span class="c-flag">--input data/raw --output data/processed --max-frames 30</span></pre></div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done amber"></div><div class="tl-label"><span class="tl-badge">4</span> Augmentasyon</div><h3>6 Teknikli Veri Artırma (4×)</h3><p>Time Masking, Brightness, Flip, Noise, Crop, Mixup.</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/augment.py <span class="c-flag">--input data/processed --output data/augmented --factor 3</span></pre></div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done"></div><div class="tl-label"><span class="tl-badge">5</span> LM</div><h3>Türkçe N-gram Dil Modeli</h3><p>Witten-Bell smoothing ile ARPA model. C++ bağımlılığı yok.</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/train_lm.py <span class="c-flag">--dummy --order 3</span></pre></div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done blue"></div><div class="tl-label"><span class="tl-badge">6</span> Eğitim</div><h3>CNN + CBAM + BiLSTM + CTC Loss</h3><p>AdamW + CosineAnnealing, ~2 saat (RTX 4070).</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/train_model.py <span class="c-flag">--epochs 50 --batch-size 16 --lr 1e-3</span></pre></div></div></div>
+
+            <div class="tl-step"><div class="tl-dot done purple"></div><div class="tl-label"><span class="tl-badge">7</span> Export</div><h3>ONNX INT8 Quantization</h3><p>PyTorch → ONNX → INT8 → 2.9 MB model.</p><div class="code-block"><div class="code-body"><pre><span class="c-cmd">python</span> tools/export_to_onnx.py <span class="c-flag">--quantize int8</span></pre></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 6. EĞİTİM (ID: training) ====== -->
+<section class="section" id="training">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Model Eğitimi Detayları
+            </h2>
+            <p>CNN+CBAM+BiLSTM mimarisinin eğitim süreci</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="grid-2 fade-up">
+            <div class="card">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:12px;">Mimari Detaylar</h4>
+                <div class="code-block"><div class="code-body"><pre><span class="c-hi">Visual Frontend (MobileNetV3-Tiny)</span>
+  └→ 3D Conv [1, 64, T, 48, 48]
+  └→ CBAM Attention (Channel + Spatial)
+  └→ BiLSTM [hidden=128, layers=2]
+  └→ FC → [1, T, 31] logits
+  └→ CTC Decoder + N-gram LM
+  └→ <span class="c-cmd">"merhaba"</span> (conf: 87%)</pre></div></div>
+            </div>
+            <div class="card">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:12px;">Eğitim Hiperparametreleri</h4>
+                <table class="bom-table" style="margin:0;">
+                    <tbody>
+                        <tr><td>Optimizer</td><td>AdamW (lr=1e-3, wd=1e-4)</td></tr>
+                        <tr><td>Scheduler</td><td>CosineAnnealing (T_max=50)</td></tr>
+                        <tr><td>Loss</td><td>CTC Loss (blank=0)</td></tr>
+                        <tr><td>Batch Size</td><td>16</td></tr>
+                        <tr><td>Epochs</td><td>50</td></tr>
+                        <tr><td>Quantization</td><td>INT8 (post-training)</td></tr>
+                        <tr><td>Model Size</td><td>2.9 MB (INT8 ONNX)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== 7. SORUN GİDERME ====== -->
+<section class="section" id="troubleshoot">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Sorun Giderme
+            </h2>
+            <p>Sık karşılaşılan hatalar ve çözümleri</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="fade-up">
+            <div class="trouble-item"><div class="trouble-err">ModuleNotFoundError: No module named 'cv2'</div><div class="trouble-fix">Çözüm: <code>pip install opencv-python-headless</code></div></div>
+            <div class="trouble-item"><div class="trouble-err">ONNX model dosyası bulunamadı</div><div class="trouble-fix">Çözüm: Sistem otomatik <strong>mock mod</strong>'a geçer. Gerçek model için <code>python tools/export_to_onnx.py</code></div></div>
+            <div class="trouble-item"><div class="trouble-err">WiFi stream bağlantı hatası</div><div class="trouble-fix">Çözüm: PC IP adresini doğrulayın → <code>--server-ip 192.168.1.x</code>, firewall 8554-8555 portlarını açın</div></div>
+            <div class="trouble-item"><div class="trouble-err">OLED ekran görüntü vermiyor</div><div class="trouble-fix">Çözüm: I2C aktif mi kontrol edin → <code>sudo raspi-config</code> → Interface → I2C → Enable. Adres: <code>i2cdetect -y 1</code></div></div>
+            <div class="trouble-item"><div class="trouble-err">Pi Camera "Camera not detected"</div><div class="trouble-fix">Çözüm: <code>sudo raspi-config</code> → Interface → Legacy Camera → Enable, ardından reboot. CSI kablo bağlantısını kontrol edin.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer class="footer">
+    <div class="container">
+        <p>Blind Eye — TÜBİTAK 2209-A | Raspberry Pi 3 B+ & Pi Camera Module v2 | TCP Socket Stream</p>
+        <p style="margin-top:6px;font-size:0.72rem;">Crimson Pro + Atkinson Hyperlegible | Vanilla CSS Dark OLED Design</p>
+    </div>
+</footer>
+
+<script>
+// Copy code
+function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Kopyalandı';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Kopyala'; btn.classList.remove('copied'); }, 1500);
+    });
+}
+
+// Scroll fade-in
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

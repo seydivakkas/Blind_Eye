@@ -1,0 +1,24 @@
+{
+  "description": "Türkçe viseme sınıf seti — CTC blank token dahil",
+  "blank_token": "<blank>",
+  "blank_idx": 0,
+  "charset": [
+    "<blank>",
+    "V_ALVEOLAR_FRICATIVE",
+    "V_BILABIAL",
+    "V_CLOSE_ROUNDED",
+    "V_CLOSE_UNROUNDED",
+    "V_DENTAL_ALVEOLAR",
+    "V_GLOTTAL",
+    "V_LABIODENTAL",
+    "V_OPEN_ROUNDED",
+    "V_OPEN_UNROUNDED",
+    "V_POSTALVEOLAR",
+    "V_VELAR"
+  ],
+  "num_classes": 12,
+  "notes": {
+    "0": "CTC blank token (V_SILENCE yerine)",
+    "1-11": "11 viseme grubu"
+  }
+}

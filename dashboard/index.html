@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Eye — Türkçe Dudak Okuma Kontrol Merkezi</title>
+    <meta name="description" content="Blind Eye — Türkçe için ilk edge-ready dudak okuma sistemi kontrol paneli. TÜBİTAK 2209-A projesi.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="var(--cyan)" stroke-width="2" opacity="0.4"/>
+                    <circle cx="20" cy="20" r="10" stroke="var(--cyan)" stroke-width="2"/>
+                    <circle cx="20" cy="20" r="3" fill="var(--cyan)"/>
+                    <line x1="20" y1="2" x2="20" y2="8" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <line x1="20" y1="32" x2="20" y2="38" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <line x1="2" y1="20" x2="8" y2="20" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <line x1="32" y1="20" x2="38" y2="20" stroke="var(--cyan)" stroke-width="1.5"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">BLIND EYE</span>
+                <span class="brand-sub">Kontrol Merkezi v2.0</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="overview" id="nav-overview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                <span>Genel Bakış</span>
+            </button>
+            <button class="nav-item" data-tab="pipeline" id="nav-pipeline">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <span>Pipeline</span>
+            </button>
+            <button class="nav-item" data-tab="training" id="nav-training">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+                <span>Eğitim & Model</span>
+            </button>
+            <button class="nav-item" data-tab="analysis" id="nav-analysis">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <span>Analiz</span>
+            </button>
+            <button class="nav-item" data-tab="academic" id="nav-academic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                <span>Akademik</span>
+            </button>
+            <button class="nav-item" data-tab="clinical" id="nav-clinical">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+                <span>Klinik & XAI</span>
+            </button>
+            <button class="nav-item" data-tab="deploy" id="nav-deploy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                <span>Dağıtım</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <div class="status-dot pulse"></div>
+                <span>Sistem Aktif</span>
+            </div>
+            <span class="version-tag">TÜBİTAK 2209-A</span>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+    <main class="main-content" id="mainContent">
+
+        <!-- ═══════ HEADER BAR ═══════ -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Menü">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <h1 class="page-title" id="pageTitle">Genel Bakış</h1>
+            </div>
+            <div class="top-bar-right">
+                <div class="connection-badge" id="connectionBadge">
+                    <div class="conn-dot"></div>
+                    <span>Pi 3 B+</span>
+                </div>
+                <div class="clock" id="liveClockDisplay"></div>
+            </div>
+        </header>
+
+        <!-- ═══════ TAB: OVERVIEW ═══════ -->
+        <section class="tab-content active" id="tab-overview">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card accent-cyan">
+                    <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg></div>
+                    <div class="kpi-body">
+                        <span class="kpi-label">WER (Word Error Rate)</span>
+                        <span class="kpi-value" id="kpiWer">28.3<small>%</small></span>
+                        <span class="kpi-trend positive">▼ 5.2% iyileşme</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent-green">
+                    <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+                    <div class="kpi-body">
+                        <span class="kpi-label">Ortalama Latency</span>
+                        <span class="kpi-value" id="kpiLatency">42<small>ms</small></span>
+                        <span class="kpi-trend positive">Pi 3 B+ uyumlu</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent-amber">
+                    <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+                    <div class="kpi-body">
+                        <span class="kpi-label">Veri Seti</span>
+                        <span class="kpi-value" id="kpiDataset">2,335</span>
+                        <span class="kpi-trend neutral">Mendeley Corpus</span>
+                    </div>
+                </div>
+                <div class="kpi-card accent-rose">
+                    <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                    <div class="kpi-body">
+                        <span class="kpi-label">Model Boyutu</span>
+                        <span class="kpi-value" id="kpiModel">4.2<small>MB</small></span>
+                        <span class="kpi-trend positive">INT8 Quantized</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Grid -->
+            <div class="overview-grid">
+                <!-- Module Map -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Modül Haritası — 29 Backend + 37 Tools</h3>
+                        <div class="chip active-chip">Aktif</div>
+                        <div class="chip dummy-chip">Dummy</div>
+                    </div>
+                    <div class="module-map" id="moduleMap">
+                        <!-- Backend Modules -->
+                        <div class="module-section">
+                            <h4 class="section-label">BACKEND</h4>
+                            <div class="module-grid" id="backendModules"></div>
+                        </div>
+                        <!-- Tools Modules -->
+                        <div class="module-section">
+                            <h4 class="section-label">TOOLS</h4>
+                            <div class="module-grid" id="toolsModules"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom row: Perf + Arch side by side -->
+                <div class="overview-bottom">
+                <!-- Live Metrics Chart -->
+                <div class="card">
+                    <div class="card-header"><h3>Performans Trendi</h3></div>
+                    <canvas id="perfChart" height="220"></canvas>
+                </div>
+
+                <!-- Architecture Diagram -->
+                <div class="card">
+                    <div class="card-header"><h3>Mimari Akış</h3></div>
+                    <div class="arch-flow">
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">Kamera</div>
+                            <div class="arch-sub">camera_manager</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">ROI</div>
+                            <div class="arch-sub">roi_processor</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">ResNet-18</div>
+                            <div class="arch-sub">visual_frontend</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">CBAM</div>
+                            <div class="arch-sub">cbam.py</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">Conformer</div>
+                            <div class="arch-sub">conformer.py</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">CTC Decoder</div>
+                            <div class="arch-sub">decoder + lm_decoder</div>
+                        </div>
+                        <div class="arch-arrow">→</div>
+                        <div class="arch-node" data-status="active">
+                            <div class="arch-label">Zemberek</div>
+                            <div class="arch-sub">zemberek_corrector</div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: PIPELINE ═══════ -->
+        <section class="tab-content" id="tab-pipeline">
+            <div class="pipeline-grid">
+                <!-- Live Camera Feed Placeholder -->
+                <div class="card span-2">
+                    <div class="card-header">
+                        <h3>Canlı Pipeline Durumu</h3>
+                        <button class="btn btn-sm btn-cyan" id="btnStartPipeline">Pipeline Başlat</button>
+                    </div>
+                    <div class="pipeline-stages" id="pipelineStages">
+                        <div class="stage" data-module="camera_manager">
+                            <div class="stage-icon">📹</div>
+                            <div class="stage-name">Kamera</div>
+                            <div class="stage-metric">30 FPS</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:92%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage" data-module="roi_processor">
+                            <div class="stage-icon">👄</div>
+                            <div class="stage-name">ROI Çıkarma</div>
+                            <div class="stage-metric">8ms</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:85%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage" data-module="visual_frontend">
+                            <div class="stage-icon">🧠</div>
+                            <div class="stage-name">Visual Frontend</div>
+                            <div class="stage-metric">12ms</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:78%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage" data-module="conformer">
+                            <div class="stage-icon">⚡</div>
+                            <div class="stage-name">Conformer</div>
+                            <div class="stage-metric">15ms</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:70%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage" data-module="decoder">
+                            <div class="stage-icon">📝</div>
+                            <div class="stage-name">CTC Decode</div>
+                            <div class="stage-metric">5ms</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:95%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage" data-module="zemberek_corrector">
+                            <div class="stage-icon">🔤</div>
+                            <div class="stage-name">Zemberek NLP</div>
+                            <div class="stage-metric">2ms</div>
+                            <div class="stage-bar"><div class="stage-fill" style="width:98%"></div></div>
+                            <div class="stage-status active">Aktif</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cognitive Monitor -->
+                <div class="card">
+                    <div class="card-header"><h3>Bilişsel İzleme</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="monitor-grid">
+                        <div class="monitor-item">
+                            <span class="monitor-label">EAR (Göz Açıklığı)</span>
+                            <div class="monitor-bar"><div class="monitor-fill" style="width:72%; background:var(--green)"></div></div>
+                            <span class="monitor-val">0.28</span>
+                        </div>
+                        <div class="monitor-item">
+                            <span class="monitor-label">PERCLOS</span>
+                            <div class="monitor-bar"><div class="monitor-fill" style="width:15%; background:var(--cyan)"></div></div>
+                            <span class="monitor-val">15%</span>
+                        </div>
+                        <div class="monitor-item">
+                            <span class="monitor-label">Mimik Skoru</span>
+                            <div class="monitor-bar"><div class="monitor-fill" style="width:45%; background:var(--amber)"></div></div>
+                            <span class="monitor-val">0.45</span>
+                        </div>
+                        <div class="monitor-item">
+                            <span class="monitor-label">Optik Akış</span>
+                            <div class="monitor-bar"><div class="monitor-fill" style="width:60%; background:var(--rose)"></div></div>
+                            <span class="monitor-val">2.3 px/f</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prediction Output -->
+                <div class="card">
+                    <div class="card-header"><h3>Tahmin Çıktısı</h3></div>
+                    <div class="prediction-display">
+                        <div class="pred-text" id="predictionText">merhaba</div>
+                        <div class="pred-confidence">
+                            <span class="pred-label">Güven:</span>
+                            <div class="conf-bar"><div class="conf-fill" id="confFill" style="width:87%"></div></div>
+                            <span class="conf-value" id="confValue">87%</span>
+                        </div>
+                        <div class="pred-meta">
+                            <span>Viseme: V_BILABIAL → V_OPEN → V_DENTAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: TRAINING ═══════ -->
+        <section class="tab-content" id="tab-training">
+            <div class="training-grid">
+                <!-- Training Controls -->
+                <div class="card">
+                    <div class="card-header"><h3>Eğitim Kontrolleri</h3></div>
+                    <div class="control-group">
+                        <label class="control-label">Konfigürasyon</label>
+                        <select class="select-input" id="trainConfig">
+                            <option value="c1">C1: Baseline (ResNet-18 + CTC)</option>
+                            <option value="c2">C2: + CBAM Attention</option>
+                            <option value="c3">C3: + Conformer Encoder</option>
+                            <option value="c4" selected>C4: Full Pipeline (Viseme-Aware)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Epoch</label>
+                        <input type="range" class="range-input" id="epochSlider" min="10" max="200" value="100">
+                        <span class="range-value" id="epochValue">100</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Learning Rate</label>
+                        <input type="range" class="range-input" id="lrSlider" min="1" max="50" value="10">
+                        <span class="range-value" id="lrValue">1e-3</span>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Batch Size</label>
+                        <select class="select-input" id="batchSize">
+                            <option value="4">4</option>
+                            <option value="8" selected>8</option>
+                            <option value="16">16</option>
+                            <option value="32">32</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Kayıp Fonksiyonu</label>
+                        <select class="select-input" id="lossSelect">
+                            <option value="ctc">Standart CTC</option>
+                            <option value="viseme" selected>Viseme-Aware CTC</option>
+                            <option value="contrastive">+ Contrastive Loss</option>
+                        </select>
+                    </div>
+                    <div class="control-actions">
+                        <button class="btn btn-cyan" id="btnTrain">Eğitimi Başlat</button>
+                        <button class="btn btn-outline" id="btnStop" disabled>Durdur</button>
+                    </div>
+                </div>
+
+                <!-- Training Curve -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>Eğitim Eğrileri</h3></div>
+                    <canvas id="trainingChart" height="280"></canvas>
+                </div>
+
+                <!-- Ablation Table -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>Ablasyon Çalışması</h3></div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="ablationTable">
+                            <thead>
+                                <tr>
+                                    <th>Konfigürasyon</th>
+                                    <th>WER%</th>
+                                    <th>CER%</th>
+                                    <th>Latency</th>
+                                    <th>Model MB</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Self-Supervised Pretraining -->
+                <div class="card">
+                    <div class="card-header"><h3>Self-Supervised Pretraining</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="ssl-panel">
+                        <div class="ssl-stat">
+                            <span class="ssl-label">Mask Ratio</span>
+                            <span class="ssl-value">15%</span>
+                        </div>
+                        <div class="ssl-stat">
+                            <span class="ssl-label">Span Masking</span>
+                            <span class="ssl-value">2-5 frame</span>
+                        </div>
+                        <div class="ssl-stat">
+                            <span class="ssl-label">Pseudo Labels</span>
+                            <span class="ssl-value">12 viseme</span>
+                        </div>
+                        <div class="ssl-stat">
+                            <span class="ssl-label">Pretraining Loss</span>
+                            <span class="ssl-value">0.842</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline" id="btnSSL">Pretraining Başlat</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: ANALYSIS ═══════ -->
+        <section class="tab-content" id="tab-analysis">
+            <div class="analysis-grid">
+                <!-- Phoneme Confusion Matrix -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>Fonem Confusion Matrix</h3></div>
+                    <div class="confusion-matrix" id="confusionMatrix"></div>
+                    <div class="confusion-legend">
+                        <span class="legend-item"><span class="legend-swatch" style="background:var(--cyan)"></span> Doğru</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:var(--amber)"></span> Homofen</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:var(--rose)"></span> Hata</span>
+                    </div>
+                </div>
+
+                <!-- Turkish Error Patterns -->
+                <div class="card">
+                    <div class="card-header"><h3>Türkçe Hata Kalıpları</h3></div>
+                    <div class="error-patterns">
+                        <div class="pattern-item">
+                            <div class="pattern-bar-wrap">
+                                <div class="pattern-bar" style="width:42%; background:var(--rose)"></div>
+                            </div>
+                            <div class="pattern-info">
+                                <span class="pattern-name">Sert/Yumuşak Ünsüz</span>
+                                <span class="pattern-detail">p↔b, t↔d, k↔g</span>
+                                <span class="pattern-pct">42%</span>
+                            </div>
+                        </div>
+                        <div class="pattern-item">
+                            <div class="pattern-bar-wrap">
+                                <div class="pattern-bar" style="width:28%; background:var(--amber)"></div>
+                            </div>
+                            <div class="pattern-info">
+                                <span class="pattern-name">Ünlü Uyumu İhlali</span>
+                                <span class="pattern-detail">a↔e, ı↔i, o↔ö</span>
+                                <span class="pattern-pct">28%</span>
+                            </div>
+                        </div>
+                        <div class="pattern-item">
+                            <div class="pattern-bar-wrap">
+                                <div class="pattern-bar" style="width:20%; background:var(--cyan)"></div>
+                            </div>
+                            <div class="pattern-info">
+                                <span class="pattern-name">Homofen Karışması</span>
+                                <span class="pattern-detail">p↔b, t↔d (görsel aynı)</span>
+                                <span class="pattern-pct">20%</span>
+                            </div>
+                        </div>
+                        <div class="pattern-item">
+                            <div class="pattern-bar-wrap">
+                                <div class="pattern-bar" style="width:10%; background:var(--green)"></div>
+                            </div>
+                            <div class="pattern-info">
+                                <span class="pattern-name">Diğer</span>
+                                <span class="pattern-detail">Ekleme/Silme</span>
+                                <span class="pattern-pct">10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Seed Statistics -->
+                <div class="card">
+                    <div class="card-header"><h3>Multi-Seed İstatistik</h3></div>
+                    <div class="stats-panel">
+                        <div class="stat-row">
+                            <span class="stat-label">Seed Sayısı</span>
+                            <span class="stat-value">5</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Ortalama WER</span>
+                            <span class="stat-value">28.3% ± 2.1</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Paired t-test</span>
+                            <span class="stat-value highlight">p = 0.0098</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Wilcoxon</span>
+                            <span class="stat-value highlight">p = 0.0312</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Cohen's d</span>
+                            <span class="stat-value">0.82 (büyük)</span>
+                        </div>
+                        <div class="stat-conclusion">
+                            "CBAM, 5 bağımsız run'da ortalama 3.4% WER azaltmıştır (p&lt;0.03)"
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOSO Cross-Validation -->
+                <div class="card">
+                    <div class="card-header"><h3>LOSO Cross-Validation</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="loso-results" id="losoResults">
+                        <div class="loso-fold"><span>Fold 1 (S01)</span><div class="loso-bar"><div class="loso-fill" style="width:72%"></div></div><span>28.0%</span></div>
+                        <div class="loso-fold"><span>Fold 2 (S02)</span><div class="loso-bar"><div class="loso-fill" style="width:68%"></div></div><span>32.0%</span></div>
+                        <div class="loso-fold"><span>Fold 3 (S03)</span><div class="loso-bar"><div class="loso-fill" style="width:80%"></div></div><span>20.0%</span></div>
+                        <div class="loso-fold"><span>Fold 4 (S04)</span><div class="loso-bar"><div class="loso-fill" style="width:60%"></div></div><span>40.0%</span></div>
+                        <div class="loso-fold"><span>Fold 5 (S05)</span><div class="loso-bar"><div class="loso-fill" style="width:75%"></div></div><span>25.0%</span></div>
+                        <div class="loso-summary">
+                            <span>Ort: 29.0% ± 7.4</span>
+                            <span>Gap: 20.0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Robustness Benchmark -->
+                <div class="card">
+                    <div class="card-header"><h3>Robustness Benchmark</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="robustness-radar" id="radarChart">
+                        <canvas id="robustnessCanvas" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: ACADEMIC ═══════ -->
+        <section class="tab-content" id="tab-academic">
+            <div class="academic-grid">
+                <!-- Articulatory Features -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>Articulatory Feature Encoder</h3></div>
+                    <div class="artic-table-wrap">
+                        <table class="data-table artic-table" id="articTable">
+                            <thead>
+                                <tr>
+                                    <th>Fonem</th>
+                                    <th>Place</th>
+                                    <th>Manner</th>
+                                    <th>Voicing</th>
+                                    <th>Rounding</th>
+                                    <th>Height</th>
+                                    <th>Backness</th>
+                                </tr>
+                            </thead>
+                            <tbody id="articBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Viseme Map -->
+                <div class="card">
+                    <div class="card-header"><h3>Viseme Grupları</h3></div>
+                    <div class="viseme-groups" id="visemeGroups"></div>
+                </div>
+
+                <!-- Phonotactic Gate -->
+                <div class="card">
+                    <div class="card-header"><h3>Fonotaktik Gate</h3><div class="chip active-chip">Entegre</div></div>
+                    <div class="gate-info">
+                        <div class="gate-stat"><span>Geçiş Matrisi</span><span class="gate-val">12×12</span></div>
+                        <div class="gate-stat"><span>Ünlü Uyumu</span><span class="gate-val">Büyük + Küçük</span></div>
+                        <div class="gate-stat"><span>Sigmoid Gate</span><span class="gate-val">σ(W·x + b)</span></div>
+                        <div class="gate-stat"><span>Dropout</span><span class="gate-val">0.1</span></div>
+                    </div>
+                </div>
+
+                <!-- Contrastive Loss -->
+                <div class="card">
+                    <div class="card-header"><h3>SupCon Contrastive Loss</h3><div class="chip active-chip">Entegre</div></div>
+                    <div class="gate-info">
+                        <div class="gate-stat"><span>Temperature</span><span class="gate-val">τ = 0.07</span></div>
+                        <div class="gate-stat"><span>Projection</span><span class="gate-val">256 → 128</span></div>
+                        <div class="gate-stat"><span>Negatif Çiftler</span><span class="gate-val">Batch-wise</span></div>
+                    </div>
+                </div>
+
+                <!-- Uncertainty -->
+                <div class="card">
+                    <div class="card-header"><h3>MC Dropout & ECE</h3><div class="chip active-chip">Entegre</div></div>
+                    <div class="gate-info">
+                        <div class="gate-stat"><span>MC Samples</span><span class="gate-val">T = 10</span></div>
+                        <div class="gate-stat"><span>ECE</span><span class="gate-val" id="eceValue">0.042</span></div>
+                        <div class="gate-stat"><span>Kalibrasyon</span><span class="gate-val good">İyi</span></div>
+                    </div>
+                </div>
+
+                <!-- Morphological FST -->
+                <div class="card">
+                    <div class="card-header"><h3>Morfolojik FST</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="fst-demo">
+                        <input type="text" class="text-input" id="fstInput" placeholder="Kelime girin..." value="evlerimizde">
+                        <button class="btn btn-sm btn-cyan" id="btnFST">Ayıştır</button>
+                        <div class="fst-result" id="fstResult">
+                            <div class="fst-root">ev</div>
+                            <div class="fst-arrow">+</div>
+                            <div class="fst-suffix">ler</div>
+                            <div class="fst-arrow">+</div>
+                            <div class="fst-suffix">imiz</div>
+                            <div class="fst-arrow">+</div>
+                            <div class="fst-suffix">de</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: CLINICAL ═══════ -->
+        <section class="tab-content" id="tab-clinical">
+            <div class="clinical-grid">
+                <!-- XAI Attention -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>XAI — Açıklanabilir Attention</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="xai-panel">
+                        <div class="xai-frames" id="xaiFrames"></div>
+                        <div class="xai-explanation" id="xaiExplanation">
+                            Model "<strong>merhaba</strong>" tahmin etti (güven: 87%).
+                            Kritik frameler: 3. frame'de Dudak kapanması (m, güven: 92%);
+                            5. frame'de Açık ağız (a, güven: 89%).
+                            Baskın viseme: Dudak kapanması (p/b/m).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TTA Adapter -->
+                <div class="card">
+                    <div class="card-header"><h3>Test-Time Adaptation</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="tta-panel">
+                        <div class="tta-stat"><span>Adaptasyon Adımı</span><span class="tta-val">0 / 50</span></div>
+                        <div class="tta-stat"><span>Başlangıç Entropisi</span><span class="tta-val">2.34</span></div>
+                        <div class="tta-stat"><span>Son Entropi</span><span class="tta-val">—</span></div>
+                        <div class="tta-stat"><span>KVKK Uyumlu</span><span class="tta-val good">RAM-only</span></div>
+                        <div class="tta-actions">
+                            <button class="btn btn-sm btn-cyan" id="btnTTA">Adapte Et</button>
+                            <button class="btn btn-sm btn-outline" id="btnTTAReset">Sıfırla</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUS Score -->
+                <div class="card">
+                    <div class="card-header"><h3>SUS Kullanılabilirlik</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="sus-panel">
+                        <div class="sus-gauge">
+                            <svg viewBox="0 0 200 120" class="gauge-svg">
+                                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--surface-2)" stroke-width="16" stroke-linecap="round"/>
+                                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#susGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="38" id="susArc"/>
+                                <defs><linearGradient id="susGrad"><stop offset="0%" stop-color="var(--rose)"/><stop offset="50%" stop-color="var(--amber)"/><stop offset="100%" stop-color="var(--green)"/></linearGradient></defs>
+                            </svg>
+                            <div class="sus-score">85.0</div>
+                            <div class="sus-grade">Grade: A (Mükemmel)</div>
+                        </div>
+                        <div class="sus-detail">N=20 katılımcı • ISO 9241-11</div>
+                    </div>
+                </div>
+
+                <!-- NASA-TLX -->
+                <div class="card">
+                    <div class="card-header"><h3>NASA-TLX</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="tlx-panel">
+                        <div class="tlx-dim"><span>Zihinsel</span><div class="tlx-bar"><div class="tlx-fill" style="width:40%"></div></div><span>40</span></div>
+                        <div class="tlx-dim"><span>Fiziksel</span><div class="tlx-bar"><div class="tlx-fill" style="width:10%"></div></div><span>10</span></div>
+                        <div class="tlx-dim"><span>Zamansal</span><div class="tlx-bar"><div class="tlx-fill" style="width:30%"></div></div><span>30</span></div>
+                        <div class="tlx-dim"><span>Performans</span><div class="tlx-bar"><div class="tlx-fill" style="width:25%"></div></div><span>25</span></div>
+                        <div class="tlx-dim"><span>Çaba</span><div class="tlx-bar"><div class="tlx-fill" style="width:35%"></div></div><span>35</span></div>
+                        <div class="tlx-dim"><span>Hayal K.</span><div class="tlx-bar"><div class="tlx-fill" style="width:20%"></div></div><span>20</span></div>
+                        <div class="tlx-overall">Genel TLX: <strong>26.7</strong> — Düşük bilişsel yük</div>
+                    </div>
+                </div>
+
+                <!-- DTW Alignment -->
+                <div class="card">
+                    <div class="card-header"><h3>DTW Zamansal Hizalama</h3><div class="chip active-chip">Entegre</div></div>
+                    <div class="gate-info">
+                        <div class="gate-stat"><span>DTW Mesafesi</span><span class="gate-val">12.4</span></div>
+                        <div class="gate-stat"><span>Normalize</span><span class="gate-val">0.41</span></div>
+                        <div class="gate-stat"><span>Hizalama Yolu</span><span class="gate-val">30 frame</span></div>
+                    </div>
+                </div>
+
+                <!-- Bootstrap Stats -->
+                <div class="card">
+                    <div class="card-header"><h3>Bootstrap CI</h3><div class="chip active-chip">Entegre</div></div>
+                    <div class="gate-info">
+                        <div class="gate-stat"><span>WER %95 CI</span><span class="gate-val">[26.1, 30.5]</span></div>
+                        <div class="gate-stat"><span>CER %95 CI</span><span class="gate-val">[20.3, 25.8]</span></div>
+                        <div class="gate-stat"><span>n_bootstrap</span><span class="gate-val">10,000</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════ TAB: DEPLOY ═══════ -->
+        <section class="tab-content" id="tab-deploy">
+            <div class="deploy-grid">
+                <!-- Export Controls -->
+                <div class="card">
+                    <div class="card-header"><h3>Model Export</h3></div>
+                    <div class="export-panel">
+                        <div class="export-option">
+                            <div class="export-icon">⚡</div>
+                            <div class="export-info">
+                                <span class="export-name">ONNX INT8</span>
+                                <span class="export-detail">Pi 3 B+ uyumlu • 4.2 MB</span>
+                            </div>
+                            <button class="btn btn-sm btn-cyan" id="btnExportOnnx">Export</button>
+                        </div>
+                        <div class="export-option">
+                            <div class="export-icon">🔬</div>
+                            <div class="export-info">
+                                <span class="export-name">PyTorch Full</span>
+                                <span class="export-detail">Araştırma modeli • 18.5 MB</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline">Export</button>
+                        </div>
+                        <div class="export-option">
+                            <div class="export-icon">📊</div>
+                            <div class="export-info">
+                                <span class="export-name">Benchmark Report</span>
+                                <span class="export-detail">Tüm metrikler JSON</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline">Oluştur</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reproducibility -->
+                <div class="card">
+                    <div class="card-header"><h3>Tekrarlanabilirlik</h3><div class="chip dummy-chip">Demo</div></div>
+                    <div class="repro-panel">
+                        <div class="repro-item checked"><span class="repro-check">✓</span>Dockerfile</div>
+                        <div class="repro-item checked"><span class="repro-check">✓</span>environment.yml</div>
+                        <div class="repro-item checked"><span class="repro-check">✓</span>dvc.yaml</div>
+                        <div class="repro-item checked"><span class="repro-check">✓</span>Experiment Log</div>
+                        <button class="btn btn-sm btn-cyan" id="btnRepro">Artifact Oluştur</button>
+                    </div>
+                </div>
+
+                <!-- Pi Benchmark -->
+                <div class="card span-2">
+                    <div class="card-header"><h3>Pi 3 B+ Benchmark</h3></div>
+                    <div class="pi-metrics">
+                        <div class="pi-stat">
+                            <div class="pi-ring">
+                                <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--surface-2)" stroke-width="6"/><circle cx="40" cy="40" r="34" fill="none" stroke="var(--cyan)" stroke-width="6" stroke-dasharray="213" stroke-dashoffset="43" transform="rotate(-90 40 40)"/></svg>
+                                <span class="pi-ring-val">80%</span>
+                            </div>
+                            <span class="pi-label">CPU Kullanımı</span>
+                        </div>
+                        <div class="pi-stat">
+                            <div class="pi-ring">
+                                <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--surface-2)" stroke-width="6"/><circle cx="40" cy="40" r="34" fill="none" stroke="var(--green)" stroke-width="6" stroke-dasharray="213" stroke-dashoffset="85" transform="rotate(-90 40 40)"/></svg>
+                                <span class="pi-ring-val">60%</span>
+                            </div>
+                            <span class="pi-label">RAM Kullanımı</span>
+                        </div>
+                        <div class="pi-stat">
+                            <div class="pi-ring">
+                                <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--surface-2)" stroke-width="6"/><circle cx="40" cy="40" r="34" fill="none" stroke="var(--amber)" stroke-width="6" stroke-dasharray="213" stroke-dashoffset="170" transform="rotate(-90 40 40)"/></svg>
+                                <span class="pi-ring-val">20%</span>
+                            </div>
+                            <span class="pi-label">GPU (Yok)</span>
+                        </div>
+                        <div class="pi-stat">
+                            <div class="pi-ring">
+                                <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--surface-2)" stroke-width="6"/><circle cx="40" cy="40" r="34" fill="none" stroke="var(--rose)" stroke-width="6" stroke-dasharray="213" stroke-dashoffset="128" transform="rotate(-90 40 40)"/></svg>
+                                <span class="pi-ring-val">42ms</span>
+                            </div>
+                            <span class="pi-label">Latency</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

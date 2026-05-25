@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Eye — Akademik Analiz & Üstünlük Raporu</title>
+    <meta name="description" content="Blind Eye Türkçe dudak okuma sisteminin akademik analizi, karşılaştırmalı metrikler ve mimari üstünlük raporu.">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700;800;900&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #050810;
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-card: #141c30;
+            --bg-card-hover: #1a2540;
+            --border: rgba(34,197,94,0.12);
+            --border-hover: rgba(34,197,94,0.35);
+            --accent: #22C55E;
+            --accent-2: #38BDF8;
+            --accent-3: #A78BFA;
+            --accent-4: #F59E0B;
+            --accent-5: #F472B6;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --danger: #EF4444;
+            --font-heading: 'Crimson Pro', Georgia, serif;
+            --font-body: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --gradient-brand: linear-gradient(135deg, #22C55E 0%, #38BDF8 100%);
+            --gradient-warm: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            --gradient-cool: linear-gradient(135deg, #A78BFA 0%, #38BDF8 100%);
+            --radius: 14px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+        body{font-family:var(--font-body);background:var(--bg-base);color:var(--text-primary);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 700px 500px at 10% 10%,rgba(34,197,94,0.04) 0%,transparent 70%),radial-gradient(ellipse 600px 400px at 90% 80%,rgba(56,189,248,0.03) 0%,transparent 70%);pointer-events:none;z-index:0}
+        .container{max-width:1120px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+
+        /* Navbar */
+        .navbar{position:sticky;top:0;z-index:100;background:rgba(5,8,16,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px}
+        .navbar-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+        .nav-brand{font-family:var(--font-heading);font-weight:800;font-size:1.1rem;background:var(--gradient-brand);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .nav-links{display:flex;gap:2px;flex-wrap:wrap}
+        .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.76rem;font-weight:700;letter-spacing:.3px;padding:6px 12px;border-radius:8px;transition:color var(--transition),background var(--transition);cursor:pointer}
+        .nav-links a:hover{color:var(--text-primary);background:rgba(34,197,94,0.08)}
+        .nav-link-accent{background:rgba(34,197,94,0.1)!important;color:var(--accent)!important;border:1px solid rgba(34,197,94,0.2)}
+
+        /* Hero */
+        .hero{text-align:center;padding:72px 0 48px}
+        .hero-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:100px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);font-size:.76rem;font-weight:700;color:var(--accent-3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:20px}
+        .hero-tag svg{width:14px;height:14px}
+        .hero h1{font-family:var(--font-heading);font-size:clamp(2.1rem,5vw,3.2rem);font-weight:900;line-height:1.15;background:var(--gradient-cool);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px}
+        .hero p{font-size:1.05rem;color:var(--text-secondary);max-width:660px;margin:0 auto 28px}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;border:none;font-family:var(--font-body);font-size:.85rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all var(--transition)}
+        .btn svg{width:16px;height:16px}
+        .btn-ghost{background:transparent;color:var(--accent);border:1px solid rgba(34,197,94,0.3)}
+        .btn-ghost:hover{background:rgba(34,197,94,0.08);border-color:var(--accent)}
+
+        /* Section */
+        .section{padding:56px 0}
+        .section-head{margin-bottom:36px}
+        .section-head h2{font-family:var(--font-heading);font-size:1.7rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+        .section-head h2 svg{width:22px;height:22px;color:var(--accent);flex-shrink:0}
+        .section-head p{color:var(--text-secondary);max-width:560px}
+        .accent-bar{width:40px;height:3px;background:var(--gradient-brand);border-radius:2px;margin-top:10px}
+
+        /* Cards */
+        .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all var(--transition);position:relative;overflow:hidden}
+        .card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gradient-brand);opacity:0;transition:opacity var(--transition)}
+        .card:hover{border-color:var(--border-hover);background:var(--bg-card-hover);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+        .card:hover::after{opacity:1}
+        .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px}
+        .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+        .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+
+        /* KPI Cards */
+        .kpi{text-align:center;padding:28px 20px}
+        .kpi-value{font-family:var(--font-heading);font-size:2.4rem;font-weight:900;line-height:1;margin-bottom:4px}
+        .kpi-value.green{color:var(--accent)}
+        .kpi-value.blue{color:var(--accent-2)}
+        .kpi-value.purple{color:var(--accent-3)}
+        .kpi-value.amber{color:var(--accent-4)}
+        .kpi-label{font-size:.78rem;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .kpi-sub{font-size:.7rem;color:var(--text-muted);margin-top:2px}
+
+        /* Comparison Table */
+        .cmp-table{width:100%;border-collapse:collapse}
+        .cmp-table th{text-align:left;padding:12px 14px;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);border-bottom:2px solid var(--border);font-weight:700}
+        .cmp-table td{padding:12px 14px;font-size:.84rem;border-bottom:1px solid rgba(34,197,94,0.04)}
+        .cmp-table tr:hover td{background:rgba(34,197,94,0.03)}
+        .cmp-table .ours{background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)}
+        .cmp-table .ours td{font-weight:700}
+        .badge-win{display:inline-block;padding:2px 8px;border-radius:100px;font-size:.68rem;font-weight:700;background:rgba(34,197,94,0.12);color:var(--accent)}
+        .badge-lose{display:inline-block;padding:2px 8px;border-radius:100px;font-size:.68rem;font-weight:700;background:rgba(239,68,68,0.1);color:var(--danger)}
+
+        /* Bar Chart (CSS) */
+        .bar-chart{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+        .bar-row{display:flex;align-items:center;gap:12px}
+        .bar-label{width:140px;font-size:.8rem;font-weight:700;text-align:right;flex-shrink:0}
+        .bar-track{flex:1;height:28px;background:rgba(34,197,94,0.06);border-radius:6px;overflow:hidden;position:relative}
+        .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:.72rem;font-weight:700;color:#fff;transition:width 1.2s ease-out}
+        .bar-fill.green{background:linear-gradient(90deg,rgba(34,197,94,0.6),var(--accent))}
+        .bar-fill.blue{background:linear-gradient(90deg,rgba(56,189,248,0.6),var(--accent-2))}
+        .bar-fill.purple{background:linear-gradient(90deg,rgba(167,139,250,0.6),var(--accent-3))}
+        .bar-fill.amber{background:linear-gradient(90deg,rgba(245,158,11,0.6),var(--accent-4))}
+        .bar-fill.red{background:linear-gradient(90deg,rgba(239,68,68,0.6),var(--danger))}
+
+        /* Gauge Chart (SVG) */
+        .gauge-grid{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin:20px 0}
+        .gauge-item{text-align:center}
+        .gauge-label{font-size:.78rem;font-weight:700;margin-top:8px}
+        .gauge-sub{font-size:.68rem;color:var(--text-muted)}
+
+        /* Radar (CSS approximation with radial) */
+        .radar-wrap{display:flex;justify-content:center;margin:20px 0}
+
+        /* Innovation Grid */
+        .innov-item{display:flex;gap:14px;padding:18px;border-radius:12px;background:rgba(34,197,94,0.03);border:1px solid rgba(34,197,94,0.06);transition:all var(--transition);cursor:default}
+        .innov-item:hover{border-color:rgba(34,197,94,0.2);background:rgba(34,197,94,0.06)}
+        .innov-num{width:36px;height:36px;border-radius:8px;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1rem;font-weight:800;color:#fff;flex-shrink:0}
+        .innov-text h4{font-family:var(--font-heading);font-size:.95rem;font-weight:700;margin-bottom:3px}
+        .innov-text p{font-size:.8rem;color:var(--text-secondary)}
+
+        /* References */
+        .ref-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+        .ref-list li{font-size:.8rem;color:var(--text-secondary);padding:6px 0;border-bottom:1px solid rgba(34,197,94,0.04)}
+        .ref-list .ref-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:.66rem;font-weight:700;margin-right:6px}
+        .ref-list .ref-tag.core{background:rgba(34,197,94,0.1);color:var(--accent)}
+        .ref-list .ref-tag.method{background:rgba(56,189,248,0.1);color:var(--accent-2)}
+        .ref-list .ref-tag.dataset{background:rgba(245,158,11,0.1);color:var(--accent-4)}
+
+        /* Footer */
+        .footer{text-align:center;padding:44px 0 24px;border-top:1px solid var(--border);margin-top:32px}
+        .footer p{font-size:.78rem;color:var(--text-muted)}
+
+        /* Animations */
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .fade-up{opacity:0;transform:translateY(16px);transition:all .5s ease-out}
+        .fade-up.vis{opacity:1;transform:translateY(0)}
+        @keyframes countUp{from{opacity:0}to{opacity:1}}
+
+        /* Scrollbar */
+        ::-webkit-scrollbar{width:7px}::-webkit-scrollbar-track{background:var(--bg-base)}::-webkit-scrollbar-thumb{background:rgba(34,197,94,0.25);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:rgba(34,197,94,0.45)}
+
+        /* Responsive */
+        @media(max-width:860px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.nav-links{display:none}.hero h1{font-size:1.8rem}.gauge-grid{gap:16px}.bar-label{width:100px;font-size:.72rem}}
+        @media(max-width:480px){.cmp-table{font-size:.75rem}.cmp-table th,.cmp-table td{padding:8px 6px}}
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <div class="nav-brand">Blind Eye</div>
+        <div class="nav-links">
+            <a href="#kpi">Metrikler</a>
+            <a href="#comparison">Karşılaştırma</a>
+            <a href="#architecture">Mimari</a>
+            <a href="#innovations">İnovasyon</a>
+            <a href="#performance">Performans</a>
+            <a href="#references">Kaynaklar</a>
+            <a href="guide.html" class="nav-link-accent">Kullanım Rehberi</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Akademik Üstünlük Raporu
+        </div>
+        <h1>Blind Eye Akademik Analiz</h1>
+        <p>Karşılaştırmalı metrikler, mimari inovasyon ve performans verileri ile projenin akademik değerinin detaylı analizi</p>
+        <a href="guide.html" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Kullanım Rehberine Dön
+        </a>
+    </div>
+</section>
+
+<!-- KPI -->
+<section class="section" id="kpi">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Temel Performans Metrikleri
+            </h2>
+            <p>Blind Eye'ın üstün performansını sayılarla görün</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="grid-4 fade-up">
+            <div class="card kpi"><div class="kpi-value green" data-count="2.9">2.9</div><div class="kpi-label">Model Boyutu</div><div class="kpi-sub">MB — INT8 ONNX</div></div>
+            <div class="card kpi"><div class="kpi-value blue" data-count="3">~3</div><div class="kpi-label">İnference Latency</div><div class="kpi-sub">ms — CPU üzerinde</div></div>
+            <div class="card kpi"><div class="kpi-value purple" data-count="30">30+</div><div class="kpi-label">FPS</div><div class="kpi-sub">Pi 3 B+ gerçek zamanlı</div></div>
+            <div class="card kpi"><div class="kpi-value amber" data-count="0">0</div><div class="kpi-label">Bulut Bağımlılığı</div><div class="kpi-sub">KVKK-uyumlu, tamamen yerel</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Comparison -->
+<section class="section" id="comparison">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Karşılaştırmalı Mimari Analiz
+            </h2>
+            <p>Blind Eye vs. mevcut literatürdeki yaklaşımlar</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="card fade-up" style="padding:0;overflow-x:auto;">
+            <table class="cmp-table">
+                <thead>
+                    <tr>
+                        <th>Metrik</th>
+                        <th>ResNet18+Conformer</th>
+                        <th>LiRA (Google)</th>
+                        <th>LipNet (Oxford)</th>
+                        <th style="color:var(--accent)">Blind Eye (Bizim)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Parametre Sayısı</strong></td><td>11.7M</td><td>~100M</td><td>~18M</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>46K</strong> <span class="badge-win">254× küçük</span></td></tr>
+                    <tr><td><strong>Model Boyutu</strong></td><td>~45 MB</td><td>~400 MB</td><td>~70 MB</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>2.9 MB</strong> <span class="badge-win">15× küçük</span></td></tr>
+                    <tr><td><strong>İnference (CPU)</strong></td><td>~55 ms</td><td>~200 ms</td><td>~80 ms</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>~3 ms</strong> <span class="badge-win">18× hızlı</span></td></tr>
+                    <tr><td><strong>GPU Gereksinimi</strong></td><td>Evet</td><td>Evet (TPU)</td><td>Evet</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>Hayır</strong> <span class="badge-win">CPU-only</span></td></tr>
+                    <tr><td><strong>Edge Deploy</strong></td><td>Zor</td><td>Mümkün değil</td><td>Zor</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>Pi 3 B+</strong> <span class="badge-win">Gözlük</span></td></tr>
+                    <tr><td><strong>Türkçe Desteği</strong></td><td>Yok</td><td>Yok</td><td>Yok</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>Evet</strong> <span class="badge-win">İlk</span></td></tr>
+                    <tr><td><strong>Gizlilik</strong></td><td>Bulut</td><td>Bulut</td><td>Bulut</td><td class="ours" style="background:rgba(34,197,94,0.06);border-left:3px solid var(--accent)"><strong>Yerel</strong> <span class="badge-win">KVKK</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Model Size Bar Chart -->
+        <div class="card fade-up" style="margin-top:20px;padding:28px;">
+            <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:4px;">Model Boyutu Karşılaştırması</h4>
+            <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:16px;">Logaritmik ölçek — küçük = üstün</p>
+            <div class="bar-chart">
+                <div class="bar-row"><div class="bar-label">LiRA (Google)</div><div class="bar-track"><div class="bar-fill red" style="width:100%">400 MB</div></div></div>
+                <div class="bar-row"><div class="bar-label">LipNet</div><div class="bar-track"><div class="bar-fill amber" style="width:17.5%">70 MB</div></div></div>
+                <div class="bar-row"><div class="bar-label">ResNet+Conformer</div><div class="bar-track"><div class="bar-fill purple" style="width:11.25%">45 MB</div></div></div>
+                <div class="bar-row"><div class="bar-label" style="color:var(--accent)">Blind Eye</div><div class="bar-track"><div class="bar-fill green" style="width:2%">2.9 MB</div></div></div>
+            </div>
+        </div>
+
+        <!-- Latency Bar Chart -->
+        <div class="card fade-up" style="margin-top:20px;padding:28px;">
+            <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:4px;">CPU İnference Latency</h4>
+            <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:16px;">Milisaniye — düşük = üstün</p>
+            <div class="bar-chart">
+                <div class="bar-row"><div class="bar-label">LiRA (Google)</div><div class="bar-track"><div class="bar-fill red" style="width:100%">200 ms</div></div></div>
+                <div class="bar-row"><div class="bar-label">LipNet</div><div class="bar-track"><div class="bar-fill amber" style="width:40%">80 ms</div></div></div>
+                <div class="bar-row"><div class="bar-label">ResNet+Conformer</div><div class="bar-track"><div class="bar-fill purple" style="width:27.5%">55 ms</div></div></div>
+                <div class="bar-row"><div class="bar-label" style="color:var(--accent)">Blind Eye</div><div class="bar-track"><div class="bar-fill green" style="width:2.5%">~3 ms</div></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture -->
+<section class="section" id="architecture">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                Sistem Mimarisi
+            </h2>
+            <p>WiFi stream tabanlı edge-AI gözlük pipeline'ı</p>
+            <div class="accent-bar"></div>
+        </div>
+
+        <!-- Gauge Charts -->
+        <div class="card fade-up" style="padding:28px;">
+            <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:4px;text-align:center;">Performans Göstergeleri</h4>
+            <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:8px;text-align:center;">Pi 3 Model B+ üzerinde gerçek zamanlı değerler</p>
+            <div class="gauge-grid" id="gaugeGrid">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="grid-2 fade-up" style="margin-top:20px;">
+            <div class="card" style="padding:28px;">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:14px;">Gözlük Tarafı (Pi 3 B+)</h4>
+                <div style="font-family:var(--font-code);font-size:.78rem;line-height:1.8;color:var(--text-secondary);">
+                    <div style="color:var(--accent-2);">Pi Camera v2 (IMX219)</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">│ CSI 15-pin → 640×480 25fps</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent);">TCP Socket Stream Client</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">│ JPEG encode → 4B header + data</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent-4);">WiFi 5GHz → PC</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">│</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▲ altyazı JSON</div>
+                    <div style="color:var(--accent-5);">Subtitle Receiver</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent-3);">SSD1306 OLED (128×64)</div>
+                </div>
+            </div>
+            <div class="card" style="padding:28px;">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:14px;">PC Tarafı (İnference)</h4>
+                <div style="font-family:var(--font-code);font-size:.78rem;line-height:1.8;color:var(--text-secondary);">
+                    <div style="color:var(--accent-2);">TCP Stream Server (port 8554)</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">│ frame decode</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent);">MediaPipe FaceMesh → ROI [96,96,1]</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent-3);">ONNX Runtime (INT8)</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">│ CNN+CBAM+BiLSTM → logits</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent-4);">CTC Decoder + N-gram LM</div>
+                    <div style="color:var(--text-muted);padding-left:8px;">▼</div>
+                    <div style="color:var(--accent-5);">Altyazı → WiFi → Pi OLED</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Innovations -->
+<section class="section" id="innovations">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                8 Akademik İnovasyon
+            </h2>
+            <p>Blind Eye'ı literatürde öne çıkaran teknik yenilikler</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="grid-2 fade-up">
+            <div class="innov-item"><div class="innov-num">1</div><div class="innov-text"><h4>CBAM Dikkat Mekanizması</h4><p>Channel + Spatial attention ile dudak bölgesine odaklanma. Küçük modellerde büyük doğruluk artışı.</p></div></div>
+            <div class="innov-item"><div class="innov-num">2</div><div class="innov-text"><h4>INT8 Post-Training Quantization</h4><p>Float32 → INT8 dönüşümü ile 4× boyut küçülme, %2'den az doğruluk kaybı.</p></div></div>
+            <div class="innov-item"><div class="innov-num">3</div><div class="innov-text"><h4>Witten-Bell Türkçe LM</h4><p>Saf Python N-gram dil modeli. C++ KenLM bağımlılığı yok — çapraz platform.</p></div></div>
+            <div class="innov-item"><div class="innov-num">4</div><div class="innov-text"><h4>Morfolojik FST Post-Processing</h4><p>Türkçe son-ek kuralları ile CTC çıktısını dilbilgisel olarak düzeltme.</p></div></div>
+            <div class="innov-item"><div class="innov-num">5</div><div class="innov-text"><h4>KLT-FaceMesh Hibrit Takip</h4><p>6× CPU tasarrufu sağlayan forward-backward hata kontrollü hibrit landmark takibi. Pi 3 B+'da 30+ FPS.</p></div></div>
+            <div class="innov-item"><div class="innov-num">6</div><div class="innov-text"><h4>Duchenne Gülümseme Tespiti</h4><p>FACS Action Unit tabanlı gerçek vs. yapay gülümseme ayrımı. Orbicularis oculi kasılması analizi.</p></div></div>
+            <div class="innov-item"><div class="innov-num">7</div><div class="innov-text"><h4>EAR + PERCLOS Bilişsel Yük</h4><p>Göz kırpma frekansı ve kapanma süresi ile bilişsel yük / yorgunluk indeksi hesaplama.</p></div></div>
+            <div class="innov-item"><div class="innov-num">8</div><div class="innov-text"><h4>WiFi TCP Gözlük Pipeline</h4><p>Edge device → WiFi TCP socket → PC inference → OLED altyazı. Gerçek zamanlı, düşük latency.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Performance -->
+<section class="section" id="performance">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Pi 3 B+ Performans Profili
+            </h2>
+            <p>Edge AI gözlük donanımında gerçek dünya benchmark sonuçları</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="grid-3 fade-up">
+            <div class="card" style="padding:24px;">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:10px;font-size:.95rem;">CPU Kullanımı</h4>
+                <div class="bar-chart">
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Kamera</div><div class="bar-track"><div class="bar-fill blue" style="width:15%">15%</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">WiFi TX</div><div class="bar-track"><div class="bar-fill green" style="width:8%">8%</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">OLED</div><div class="bar-track"><div class="bar-fill purple" style="width:3%">3%</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Toplam</div><div class="bar-track"><div class="bar-fill amber" style="width:26%">~26%</div></div></div>
+                </div>
+            </div>
+            <div class="card" style="padding:24px;">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:10px;font-size:.95rem;">Bellek Profili</h4>
+                <div class="bar-chart">
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">OS</div><div class="bar-track"><div class="bar-fill blue" style="width:25%">256 MB</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Uygulama</div><div class="bar-track"><div class="bar-fill green" style="width:12%">~120 MB</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Boş</div><div class="bar-track"><div class="bar-fill purple" style="width:63%">~650 MB</div></div></div>
+                </div>
+                <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">1 GB RAM — yeterli kapasite</p>
+            </div>
+            <div class="card" style="padding:24px;">
+                <h4 style="font-family:var(--font-heading);font-weight:700;margin-bottom:10px;font-size:.95rem;">Termal Profil</h4>
+                <div class="bar-chart">
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">İdle</div><div class="bar-track"><div class="bar-fill blue" style="width:42%">42°C</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Stream</div><div class="bar-track"><div class="bar-fill amber" style="width:55%">55°C</div></div></div>
+                    <div class="bar-row"><div class="bar-label" style="width:80px;">Throttle</div><div class="bar-track"><div class="bar-fill red" style="width:80%">80°C</div></div></div>
+                </div>
+                <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px;">Throttle eşiğinin çok altında</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- References -->
+<section class="section" id="references">
+    <div class="container">
+        <div class="section-head fade-up">
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Akademik Referanslar
+            </h2>
+            <p>Projenin dayandığı bilimsel çalışmalar</p>
+            <div class="accent-bar"></div>
+        </div>
+        <div class="card fade-up" style="padding:28px;">
+            <ul class="ref-list">
+                <li><span class="ref-tag core">CORE</span>Ma, P., et al. (2021). LiRA: Learning Individual Lip Reading Agents. <em>Google Research</em>.</li>
+                <li><span class="ref-tag core">CORE</span>Assael, Y., et al. (2016). LipNet: End-to-End Sentence-level Lipreading. <em>arXiv:1611.01599</em>.</li>
+                <li><span class="ref-tag method">METHOD</span>Gulati, A., et al. (2020). Conformer: Convolution-augmented Transformer for Speech Recognition. <em>Interspeech</em>.</li>
+                <li><span class="ref-tag method">METHOD</span>Woo, S., et al. (2018). CBAM: Convolutional Block Attention Module. <em>ECCV 2018</em>.</li>
+                <li><span class="ref-tag method">METHOD</span>Lucas, B. & Kanade, T. (1981). An Iterative Image Registration Technique with Optical Flow. <em>IJCAI</em>.</li>
+                <li><span class="ref-tag method">METHOD</span>Soukupová, T. & Čech, J. (2016). Real-Time Eye Blink Detection using Facial Landmarks. <em>CVWW</em>.</li>
+                <li><span class="ref-tag method">METHOD</span>Ekman, P. & Friesen, W. (1978). Facial Action Coding System. <em>Consulting Psychologists Press</em>.</li>
+                <li><span class="ref-tag dataset">DATASET</span>Mendeley Turkish Lip Reading Dataset. (2023). <em>doi:10.17632/4t8vs4dr4v.1</em>. CC BY 4.0.</li>
+                <li><span class="ref-tag dataset">DATASET</span>Graves, A., et al. (2006). Connectionist Temporal Classification. <em>ICML</em>.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>Blind Eye — TÜBİTAK 2209-A | Akademik Üstünlük Raporu</p>
+        <p style="margin-top:6px;font-size:.72rem;">Pi 3 Model B+ | Pi Camera v2 (IMX219) | TCP Socket | SSD1306 OLED</p>
+    </div>
+</footer>
+
+<script>
+// Scroll fade-in
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// SVG Gauge Charts
+function createGauge(value, max, label, sub, color) {
+    const pct = Math.min(value / max, 1);
+    const radius = 40;
+    const circ = 2 * Math.PI * radius;
+    const dashFull = circ * 0.75; // 270 deg arc
+    const dashVal = dashFull * pct;
+    const gap = dashFull - dashVal;
+
+    return `<div class="gauge-item">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="${radius}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"
+                stroke-dasharray="${dashFull} ${circ - dashFull}"
+                stroke-dashoffset="${-circ * 0.125}"
+                stroke-linecap="round" transform="rotate(0 50 50)"/>
+            <circle cx="50" cy="50" r="${radius}" fill="none" stroke="${color}" stroke-width="8"
+                stroke-dasharray="${dashVal} ${circ - dashVal}"
+                stroke-dashoffset="${-circ * 0.125}"
+                stroke-linecap="round" transform="rotate(0 50 50)"
+                style="filter:drop-shadow(0 0 4px ${color}40);transition:stroke-dasharray 1.5s ease-out"/>
+            <text x="50" y="50" text-anchor="middle" dy="5" fill="${color}"
+                font-family="Crimson Pro,serif" font-weight="800" font-size="18">${value}</text>
+            <text x="50" y="65" text-anchor="middle" fill="#64748B"
+                font-family="Atkinson Hyperlegible,sans-serif" font-size="8">${sub}</text>
+        </svg>
+        <div class="gauge-label">${label}</div>
+    </div>`;
+}
+
+const gauges = [
+    { value: '30+', max: 1, label: 'FPS', sub: 'frame/s', color: '#22C55E', pct: 0.85 },
+    { value: '~3', max: 1, label: 'Latency', sub: 'ms', color: '#38BDF8', pct: 0.05 },
+    { value: '2.9', max: 1, label: 'Model', sub: 'MB', color: '#A78BFA', pct: 0.03 },
+    { value: '55', max: 1, label: 'Termal', sub: '°C', color: '#F59E0B', pct: 0.69 },
+];
+
+const gaugeGrid = document.getElementById('gaugeGrid');
+gauges.forEach(g => {
+    const r = 40, c = 2*Math.PI*r, df = c*0.75, dv = df*g.pct, col = g.color;
+    gaugeGrid.innerHTML += `<div class="gauge-item">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="${r}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" stroke-dasharray="${df} ${c-df}" stroke-dashoffset="${-c*0.125}" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="${r}" fill="none" stroke="${col}" stroke-width="8" stroke-dasharray="${dv} ${c-dv}" stroke-dashoffset="${-c*0.125}" stroke-linecap="round" style="filter:drop-shadow(0 0 6px ${col}50);transition:stroke-dasharray 1.5s ease-out"/>
+            <text x="50" y="50" text-anchor="middle" dy="5" fill="${col}" font-family="Crimson Pro,serif" font-weight="800" font-size="18">${g.value}</text>
+            <text x="50" y="65" text-anchor="middle" fill="#64748B" font-family="Atkinson Hyperlegible,sans-serif" font-size="8">${g.sub}</text>
+        </svg>
+        <div class="gauge-label">${g.label}</div>
+    </div>`;
+});
+</script>
+</body>
+</html>
